@@ -1,26 +1,119 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --primary: #FFB22C;
+  --accent: #FF8F00;
+  --charcoal: #343131;
+  --paper: #FAF8F5;
+  --card: #FFFFFF;
+  --border-warm: #EAE6DF;
+  --muted: #6B6661;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    background-color: var(--paper);
+    color: var(--charcoal);
+    font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.font-serif {
+  font-family: var(--font-serif), Georgia, Cambria, "Times New Roman", serif;
+}
+
+.font-sans {
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Editorial prose line lengths and typography */
+.prose-editorial {
+  max-width: 68ch;
+  line-height: 1.8;
+  font-size: 1.125rem;
+  color: #343131;
+}
+
+.prose-editorial p {
+  margin-bottom: 1.5rem;
+}
+
+.prose-editorial h2 {
+  font-family: var(--font-serif), serif;
+  font-size: 1.875rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  color: #1c1917;
+}
+
+.prose-editorial h3 {
+  font-family: var(--font-serif), serif;
+  font-size: 1.45rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: #1c1917;
+}
+
+.prose-editorial blockquote {
+  border-left: 3px solid #FF8F00;
+  padding-left: 1.25rem;
+  margin-top: 1.75rem;
+  margin-bottom: 1.75rem;
+  font-family: var(--font-serif), serif;
+  font-style: italic;
+  font-size: 1.25rem;
+  color: #44403c;
+}
+
+.prose-editorial ul, .prose-editorial ol {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.prose-editorial li {
+  margin-bottom: 0.5rem;
+}
+
+.prose-editorial code {
+  background-color: #F1EDE4;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+  font-family: monospace;
+}
+
+.prose-editorial pre {
+  background-color: #292524;
+  color: #F5F5F4;
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.prose-editorial pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+/* Subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF8F5;
+}
+::-webkit-scrollbar-thumb {
+  background: #D8D2C6;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C4BCAD;
 }
