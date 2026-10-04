@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Post } from '@/types';
 import { Avatar } from '@/components/common/Avatar';
 import { Badge } from '@/components/common/Badge';
 import {
@@ -10,14 +9,14 @@ import {
   CheckCircle2,
   XCircle,
   FileEdit,
-  Clock,
   Calendar,
   Archive,
   AlertCircle
 } from 'lucide-react';
+import { useApi } from '@/hooks/useApi';
 
 interface ModerationModalProps {
-  post: Post | null;
+  post: any | null;
   isOpen: boolean;
   onClose: () => void;
   onActionComplete: () => void;
@@ -30,50 +29,41 @@ export const ModerationModal: React.FC<ModerationModalProps> = ({
   onActionComplete
 }) => {
   const [feedbackNote, setFeedbackNote] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { put, loading: isProcessing } = useApi();
 
   if (!isOpen || !post) return null;
 
   const handleModeration = async (action: 'approved' | 'rejected' | 'changes_requested' | 'archived') => {
-    setIsProcessing(true);
     setError(null);
 
-    try {
-      const res = await fetch(`/api/posts/${post.id}/moderate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action,
-          notes: feedbackNote.trim() || undefined
-        })
-      });
+    const postId = post._id || post.id;
+    const newStatus = action === 'approved' ? 'published' : 'draft';
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Failed to execute moderation action');
-      }
+    try {
+      await put(`/api/blog/${postId}`, {
+        status: newStatus,
+        editorialNotes: feedbackNote.trim() || undefined,
+      });
 
       onActionComplete();
       onClose();
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Error processing moderation');
-    } finally {
-      setIsProcessing(false);
+    } catch (err: any) {
+      setError(err.response?.data?.message || err.message || 'Error processing moderation');
     }
   };
 
   const formattedDate = post.submittedAt
     ? new Date(post.submittedAt).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      })
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    })
     : new Date(post.createdAt).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      });
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-150">
@@ -120,11 +110,6 @@ export const ModerationModal: React.FC<ModerationModalProps> = ({
                 <Calendar className="w-3.5 h-3.5 mr-1 text-[#96918B]" />
                 Submitted: {formattedDate}
               </span>
-              <span>•</span>
-              <span className="flex items-center">
-                <Clock className="w-3.5 h-3.5 mr-1 text-[#96918B]" />
-                {post.readingTimeMinutes} min read
-              </span>
             </div>
           </div>
 
@@ -160,7 +145,7 @@ export const ModerationModal: React.FC<ModerationModalProps> = ({
               Full Text Submission
             </h5>
             <div className="prose-editorial max-w-none text-sm leading-relaxed space-y-4 text-[#343131] bg-[#FAF8F5] p-6 rounded-2xl border border-[#EAE6DF]">
-              {post.content.split('\n\n').map((para, i) => (
+              {(post.content || '').split('\n\n').map((para: string, i: number) => (
                 <p key={i}>{para}</p>
               ))}
             </div>

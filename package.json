@@ -12,16 +12,22 @@
     "db:sample": "tsx --env-file=.env src/scripts/seedSampleData.ts"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.9.1",
     "axios": "^1.20.0",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.11.0",
     "jose": "^6.2.12",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.48.0",
     "mongoose": "^9.10.2",
     "next": "16.3.6",
+    "next-cloudinary": "^6.19.3",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "react-hook-form": "^7.89.0",
+    "react-quill-new": "^3.8.3",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

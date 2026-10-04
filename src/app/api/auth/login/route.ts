@@ -3,7 +3,6 @@ import { connectDB } from "@/lib/db";
 import { getUserByEmail } from "@/services/authService";
 import { TokenServices } from "@/services/tokenServices";
 import bcrypt from 'bcrypt';
-
 import { setAuthCookies } from "@/lib/cookies";
 
 export const POST = async (req: Request) => {
@@ -30,14 +29,26 @@ export const POST = async (req: Request) => {
             return ApiResponse.error(401, false, "Invalid email or password", null);
         }
 
+        let roleName = 'employee';
+        if (typeof user.role === 'object' && (user.role as any)?.name) {
+            roleName = (user.role as any).name.toLowerCase();
+        } else if (typeof user.role === 'string') {
+            roleName = user.role.toLowerCase();
+        }
+
         const safeUser = {
             id: user._id.toString(),
             name: user.name,
             email: user.email,
-            role: user.role,
+            role: roleName,
         };
 
-        const { accessToken, refreshToken } = TokenServices.generateTokens(safeUser);
+        // Generate identity-only token without embedding role in JWT
+        const { accessToken, refreshToken } = TokenServices.generateTokens({
+            id: user._id.toString(),
+            email: user.email,
+            tokenVersion: user.tokenVersion,
+        });
 
         const response = ApiResponse.success(200, true, "User logged in successfully", {
             user: safeUser,

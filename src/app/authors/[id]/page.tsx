@@ -8,7 +8,7 @@ import { getCurrentUser } from '@/lib/auth';
 import { Navbar } from '@/components/common/Navbar';
 import { Footer } from '@/components/common/Footer';
 import { Avatar } from '@/components/common/Avatar';
-import { Clock, Calendar, ArrowRight, BookOpen, Eye, Edit3 } from 'lucide-react';
+import { BookOpen, Edit3 } from 'lucide-react';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -66,7 +66,7 @@ export default async function AuthorProfilePage({ params }: PageProps) {
                 </div>
 
                 <p className="text-sm text-[#44403c] leading-relaxed max-w-2xl">
-                  {author.bio || 'Staff author at The Common Thread, publishing technical findings and organizational reflections.'}
+                  {author.bio || 'Staff author at Blog Builder, publishing technical findings and organizational reflections.'}
                 </p>
 
                 <div className="pt-4 border-t border-[#EAE6DF] flex flex-wrap items-center justify-center sm:justify-start gap-6 text-xs text-[#6B6661]">
@@ -134,13 +134,21 @@ export default async function AuthorProfilePage({ params }: PageProps) {
 
                   <div className="md:col-span-4">
                     <Link href={`/stories/${post.slug}`} className="block relative aspect-16/10 rounded-xl overflow-hidden bg-[#EAE6DF]">
-                      <Image
-                        src={post.coverImage}
-                        alt={post.title}
-                        fill
-                        className="object-cover hover:scale-104 transition-transform duration-300"
-                        unoptimized
-                      />
+                      {post.coverImage ? (
+                        <Image
+                          src={post.coverImage}
+                          alt={post.title}
+                          fill
+                          className="object-cover hover:scale-104 transition-transform duration-300"
+                          unoptimized
+                        />
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#FAF3E0] to-[#F2ECE1] p-3 text-center">
+                          <span className="font-serif font-bold text-xs text-[#343131] line-clamp-2 px-2">
+                            {post.title}
+                          </span>
+                        </div>
+                      )}
                     </Link>
                   </div>
                 </article>

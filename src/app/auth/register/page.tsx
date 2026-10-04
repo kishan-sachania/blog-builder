@@ -4,7 +4,7 @@ import { RegisterForm } from '@/components/auth/RegisterForm';
 import { ArrowLeft, Feather } from 'lucide-react';
 
 export const metadata = {
-  title: 'Join The Common Thread — Register Author Account',
+  title: 'Join Blog Builder — Register Author Account',
   description: 'Register as an employee contributor to author essays and participate in editorial discussions.',
 };
 
@@ -23,7 +23,7 @@ export default function RegisterPage() {
 
         <div className="flex items-center space-x-2 text-xs text-[#6B6661]">
           <Feather className="w-4 h-4 text-[#FF8F00]" />
-          <span className="font-serif font-bold text-[#343131]">The Common Thread</span>
+          <span className="font-serif font-bold text-[#343131]">Blog Builder</span>
         </div>
       </div>
 

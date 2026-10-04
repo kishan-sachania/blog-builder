@@ -3,32 +3,42 @@ import { getCurrentUser } from "@/lib/auth";
 import { connectDB } from "@/lib/db"
 import { createBlog, getBlogs } from "@/services/blogServices";
 import { NextRequest } from "next/server";
+import { withPermission } from "@/lib/rbac";
 
-export const GET = async () => {
+export const GET = withPermission("blog", "read", async (req: NextRequest) => {
     try {
         await connectDB();
-        const blogs = await getBlogs();
+        const { searchParams } = new URL(req.url);
+        const page = parseInt(searchParams.get("page") || "1", 10);
+        const limit = parseInt(searchParams.get("limit") || "10", 10);
+        const status = searchParams.get("status") || undefined;
+        const search = searchParams.get("search") || undefined;
+        const category = searchParams.get("category") || undefined;
+        const author = searchParams.get("author") || undefined;
+
+        const blogs = await getBlogs({ page, limit, status, search, category, author });
         return ApiResponse.success(200, true, "Blogs fetched successfully", blogs);
     } catch (error: any) {
         return ApiResponse.error(500, false, "Failed to fetch blogs", error.message);
     }
-}
+});
 
 
-export const POST = async (req: NextRequest) => {
+export const POST = withPermission("blog", "create", async (req: NextRequest, _ctx: any, user: any) => {
     try {
-        await connectDB()
+        await connectDB();
         const body = await req.json();
         if (!body.title || !body.content || !body.category) {
             return ApiResponse.error(400, false, "Title and content are required", "");
         }
-        const user = await getCurrentUser();
-        if (!user) {
+        const currentUser = user || (await getCurrentUser());
+        if (!currentUser) {
             return ApiResponse.error(401, false, "Unauthorized: Please log in to create a blog", "");
         }
-        const blog = await createBlog({ ...body, author: user.id });
+        const authorId = currentUser.id || currentUser._id?.toString();
+        const blog = await createBlog({ ...body, author: authorId });
         return ApiResponse.success(200, true, "Blog created successfully", blog);
     } catch (error: any) {
         return ApiResponse.error(500, false, "Failed to create blog", error.message);
     }
-}
+});

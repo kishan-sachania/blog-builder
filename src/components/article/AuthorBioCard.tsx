@@ -6,13 +6,9 @@ import { ArrowRight, BookOpen } from 'lucide-react';
 
 interface AuthorBioCardProps {
   author: User;
-  authorStoriesCount?: number;
 }
 
-export const AuthorBioCard: React.FC<AuthorBioCardProps> = ({
-  author,
-  authorStoriesCount
-}) => {
+export const AuthorBioCard: React.FC<AuthorBioCardProps> = ({ author }) => {
   return (
     <div className="max-w-3xl mx-auto my-12 p-8 rounded-2xl bg-[#F4EFE6] border border-[#EAE6DF]">
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
@@ -47,7 +43,7 @@ export const AuthorBioCard: React.FC<AuthorBioCardProps> = ({
           </div>
 
           <p className="text-sm text-[#44403c] leading-relaxed">
-            {author.bio || 'Staff author at The Common Thread, publishing technical findings and organizational reflections.'}
+            {author.bio || 'Staff author at Blog Builder, publishing technical findings and organizational reflections.'}
           </p>
         </div>
       </div>

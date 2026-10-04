@@ -16,9 +16,9 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const category = await categoryService.getCategoryBySlug(slug);
-  if (!category) return { title: 'Topic Not Found — The Common Thread' };
+  if (!category) return { title: 'Topic Not Found — Blog Builder' };
   return {
-    title: `${category.name} — The Common Thread Archive`,
+    title: `${category.name} — Blog Builder Archive`,
     description: category.description,
   };
 }

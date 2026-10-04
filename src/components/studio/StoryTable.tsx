@@ -3,22 +3,21 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Post } from '@/types';
 import { Badge } from '@/components/common/Badge';
 import {
   Edit3,
   Trash2,
   ExternalLink,
-  Send,
   Eye,
   Calendar,
-  AlertCircle,
-  Clock,
-  CheckCircle2
+  CheckCircle2,
+  FileEdit,
+  Globe
 } from 'lucide-react';
+import { useApi } from '@/hooks/useApi';
 
 interface StoryTableProps {
-  stories: Post[];
+  stories: any[];
   title?: string;
   onRefresh?: () => void;
 }
@@ -30,8 +29,10 @@ export const StoryTable: React.FC<StoryTableProps> = ({
 }) => {
   const router = useRouter();
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [submittingId, setSubmittingId] = useState<string | null>(null);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
+
+  const { del, put } = useApi();
 
   const handleDelete = async (id: string, storyTitle: string) => {
     if (!confirm(`Are you sure you want to permanently delete "${storyTitle}"?`)) {
@@ -40,11 +41,7 @@ export const StoryTable: React.FC<StoryTableProps> = ({
 
     setDeletingId(id);
     try {
-      const res = await fetch(`/api/posts/${id}`, { method: 'DELETE' });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Failed to delete story');
-      }
+      await del(`/api/blog/${id}`);
       setActionMessage('Story deleted successfully.');
       setTimeout(() => setActionMessage(null), 3000);
       router.refresh();
@@ -56,26 +53,23 @@ export const StoryTable: React.FC<StoryTableProps> = ({
     }
   };
 
-  const handleSubmitForReview = async (id: string) => {
-    setSubmittingId(id);
+  const handleToggleStatus = async (story: any) => {
+    const nextStatus = story.status === 'published' ? 'draft' : 'published';
+    setTogglingId(story.id);
     try {
-      const res = await fetch(`/api/posts/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'in_review' })
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Failed to submit story');
-      }
-      setActionMessage('Story submitted to the editorial review queue!');
+      await put(`/api/blog/${story.id}`, { status: nextStatus });
+      setActionMessage(
+        nextStatus === 'published'
+          ? 'Story published successfully!'
+          : 'Story moved to drafts.'
+      );
       setTimeout(() => setActionMessage(null), 3000);
       router.refresh();
       if (onRefresh) onRefresh();
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Error submitting story');
+      alert(err instanceof Error ? err.message : 'Error updating story status');
     } finally {
-      setSubmittingId(null);
+      setTogglingId(null);
     }
   };
 
@@ -102,11 +96,11 @@ export const StoryTable: React.FC<StoryTableProps> = ({
         <div className="py-16 text-center p-6">
           <p className="text-sm font-medium text-[#343131]">No stories in this view</p>
           <p className="text-xs text-[#6B6661] mt-1 max-w-sm mx-auto">
-            You don&apos;t have any stories matching this status filter yet.
+            You don&apos;t have any stories here yet. Write your first article today.
           </p>
           <Link
             href="/studio/new"
-            className="mt-4 inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-colors"
+            className="mt-4 inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-colors cursor-pointer"
           >
             <span>Write a New Story</span>
           </Link>
@@ -132,9 +126,11 @@ export const StoryTable: React.FC<StoryTableProps> = ({
                   year: 'numeric'
                 });
 
+                const isPublished = story.status === 'published';
+
                 return (
                   <tr key={story.id} className="hover:bg-[#FAF8F5]/80 transition-colors">
-                    {/* Title & Notes */}
+                    {/* Title & Excerpt */}
                     <td className="px-5 py-4 max-w-md">
                       <div className="space-y-1">
                         <Link
@@ -146,19 +142,6 @@ export const StoryTable: React.FC<StoryTableProps> = ({
                         <p className="text-[#6B6661] text-[11px] line-clamp-1">
                           {story.excerpt}
                         </p>
-
-                        {/* Rejection / revision feedback notice */}
-                        {story.status === 'rejected' && story.editorialNotes && (
-                          <div className="mt-2 p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-[11px] space-y-1">
-                            <div className="font-semibold flex items-center space-x-1 text-rose-900">
-                              <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-600" />
-                              <span>Editorial Feedback Note:</span>
-                            </div>
-                            <p className="italic pl-4 text-rose-800 leading-normal">
-                              &ldquo;{story.editorialNotes}&rdquo;
-                            </p>
-                          </div>
-                        )}
                       </div>
                     </td>
 
@@ -193,23 +176,34 @@ export const StoryTable: React.FC<StoryTableProps> = ({
                     {/* Actions */}
                     <td className="px-5 py-4 whitespace-nowrap text-right">
                       <div className="flex items-center justify-end space-x-2">
-                        {/* Quick submit for review if draft or rejected */}
-                        {(story.status === 'draft' || story.status === 'rejected') && (
-                          <button
-                            onClick={() => handleSubmitForReview(story.id)}
-                            disabled={submittingId === story.id}
-                            className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-[#FAF3E0] text-[#8C5D00] hover:bg-[#FFB22C] hover:text-[#343131] transition-colors font-medium text-[11px] cursor-pointer"
-                            title="Submit for editorial review"
-                          >
-                            <Send className="w-3 h-3" />
-                            <span>{submittingId === story.id ? 'Submitting...' : 'Submit'}</span>
-                          </button>
-                        )}
+                        {/* Toggle Publish / Draft */}
+                        <button
+                          type="button"
+                          onClick={() => handleToggleStatus(story)}
+                          disabled={togglingId === story.id}
+                          className={`inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg transition-colors font-medium text-[11px] cursor-pointer ${isPublished
+                              ? 'bg-stone-100 text-stone-700 hover:bg-stone-200'
+                              : 'bg-[#FAF3E0] text-[#8C5D00] hover:bg-[#FFB22C] hover:text-[#343131]'
+                            }`}
+                          title={isPublished ? 'Move to draft' : 'Publish story'}
+                        >
+                          {isPublished ? (
+                            <>
+                              <FileEdit className="w-3 h-3" />
+                              <span>{togglingId === story.id ? 'Updating...' : 'Unpublish'}</span>
+                            </>
+                          ) : (
+                            <>
+                              <Globe className="w-3 h-3" />
+                              <span>{togglingId === story.id ? 'Publishing...' : 'Publish'}</span>
+                            </>
+                          )}
+                        </button>
 
                         {/* View public article if published */}
-                        {story.status === 'published' && (
+                        {isPublished && (
                           <Link
-                            href={`/stories/${story.slug}`}
+                            href={`/stories/${story.slug || story.id}`}
                             target="_blank"
                             className="p-1.5 rounded-lg border border-[#EAE6DF] text-[#6B6661] hover:text-[#343131] hover:bg-[#FAF8F5] transition-colors"
                             title="View public essay"
@@ -218,20 +212,21 @@ export const StoryTable: React.FC<StoryTableProps> = ({
                           </Link>
                         )}
 
-                        {/* Edit Button */}
+                        {/* Edit Action */}
                         <Link
                           href={`/studio/edit/${story.id}`}
-                          className="p-1.5 rounded-lg border border-[#EAE6DF] text-[#6B6661] hover:text-[#FF8F00] hover:bg-[#FAF8F5] transition-colors"
+                          className="p-1.5 rounded-lg border border-[#EAE6DF] text-[#6B6661] hover:text-[#343131] hover:bg-[#FAF8F5] transition-colors"
                           title="Edit story"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
                         </Link>
 
-                        {/* Delete Button */}
+                        {/* Delete Action */}
                         <button
+                          type="button"
                           onClick={() => handleDelete(story.id, story.title)}
                           disabled={deletingId === story.id}
-                          className="p-1.5 rounded-lg border border-[#EAE6DF] text-rose-600 hover:bg-rose-50 hover:border-rose-200 transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg border border-[#EAE6DF] text-[#96918B] hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 transition-colors cursor-pointer"
                           title="Delete story"
                         >
                           <Trash2 className="w-3.5 h-3.5" />

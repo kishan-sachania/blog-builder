@@ -59,7 +59,7 @@ async function seedSampleData() {
     );
 
     const employeePermIds = permDocs
-        .filter(p => p.name.includes(":read") || p.name === "posts:create" || p.name === "posts:update")
+        .filter(p => p.name.includes(":read") || p.name === "posts:create" || p.name === "posts:update" || p.name === "users:update")
         .map(p => p._id);
 
     const employeeRole = await Role.findOneAndUpdate(

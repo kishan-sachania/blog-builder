@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Post } from '@/types';
-import { Clock, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface RelatedStoriesProps {
   currentPostId: string;
@@ -52,23 +52,26 @@ export const RelatedStories: React.FC<RelatedStoriesProps> = ({
             >
               <div>
                 <div className="relative aspect-16/10 rounded-xl overflow-hidden bg-[#EAE6DF] mb-4">
-                  <Image
-                    src={story.coverImage}
-                    alt={story.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover group-hover:scale-104 transition-transform duration-500 ease-out"
-                    unoptimized
-                  />
+                  {story.coverImage ? (
+                    <Image
+                      src={story.coverImage}
+                      alt={story.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover group-hover:scale-104 transition-transform duration-500 ease-out"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#FAF3E0] to-[#F2ECE1] p-3 text-center">
+                      <span className="font-serif font-bold text-xs text-[#343131] line-clamp-2 px-2">
+                        {story.title}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex items-center space-x-2 text-xs text-[#6B6661] mb-2">
+                <div className="flex items-center text-xs text-[#6B6661] mb-2">
                   <span className="font-medium text-[#343131]">{story.authorName}</span>
-                  <span>•</span>
-                  <span className="flex items-center">
-                    <Clock className="w-3 h-3 mr-1" />
-                    {story.readingTimeMinutes} min read
-                  </span>
                 </div>
 
                 <h4 className="font-serif text-lg font-bold text-[#343131] group-hover:text-[#FF8F00] transition-colors leading-snug line-clamp-2">

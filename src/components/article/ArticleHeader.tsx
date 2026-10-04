@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Post } from '@/types';
 import { Avatar } from '@/components/common/Avatar';
-import { Clock, Calendar, Share2, Check, Bookmark, Eye } from 'lucide-react';
+import { Calendar, Share2, Check, Bookmark, Eye } from 'lucide-react';
 
 interface ArticleHeaderProps {
   post: Post;
@@ -16,15 +16,15 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
 
   const formattedDate = post.publishedAt
     ? new Date(post.publishedAt).toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric'
-      })
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    })
     : new Date(post.createdAt).toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric'
-      });
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    });
 
   const handleShare = () => {
     if (typeof window !== 'undefined') {
@@ -36,7 +36,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
 
   return (
     <header className="max-w-3xl mx-auto pt-10 pb-8 px-4 sm:px-6">
-      {/* Category Pill & Read time */}
+      {/* Category Pill & Views */}
       <div className="flex items-center space-x-3 mb-6">
         <Link
           href={`/topics`}
@@ -44,11 +44,6 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
         >
           {post.categoryName}
         </Link>
-        <span className="text-xs text-[#96918B]">•</span>
-        <span className="text-xs text-[#6B6661] flex items-center">
-          <Clock className="w-3.5 h-3.5 mr-1 text-[#96918B]" />
-          {post.readingTimeMinutes} min read
-        </span>
         {post.viewCount > 0 && (
           <>
             <span className="text-xs text-[#96918B]">•</span>
@@ -61,16 +56,9 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
       </div>
 
       {/* Main Title */}
-      <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#343131] leading-[1.18] mb-4">
+      <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#343131] leading-[1.18] mb-8">
         {post.title}
       </h1>
-
-      {/* Subtitle / Excerpt */}
-      {post.excerpt && (
-        <p className="text-lg sm:text-xl text-[#6B6661] font-light leading-relaxed mb-8">
-          {post.excerpt}
-        </p>
-      )}
 
       {/* Author Bar & Actions */}
       <div className="pt-6 border-t border-[#EAE6DF] flex flex-wrap items-center justify-between gap-4">
@@ -100,9 +88,8 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
         <div className="flex items-center space-x-2 text-[#6B6661]">
           <button
             onClick={() => setBookmarked(!bookmarked)}
-            className={`p-2 rounded-full border border-[#EAE6DF] hover:bg-white transition-colors ${
-              bookmarked ? 'text-[#FF8F00] bg-white border-[#FF8F00]' : ''
-            }`}
+            className={`p-2 rounded-full border border-[#EAE6DF] hover:bg-white transition-colors ${bookmarked ? 'text-[#FF8F00] bg-white border-[#FF8F00]' : ''
+              }`}
             title="Bookmark story"
             aria-label="Bookmark story"
           >

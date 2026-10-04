@@ -8,7 +8,7 @@ import { Footer } from '@/components/common/Footer';
 import { ArrowRight, Compass } from 'lucide-react';
 
 export const metadata = {
-  title: 'Topics & Editorial Archives — The Common Thread',
+  title: 'Topics & Editorial Archives — Blog Builder',
   description: 'Explore publication archives by discipline, craft, engineering systems, and workplace culture.',
 };
 
@@ -90,7 +90,7 @@ export default async function TopicsIndexPage() {
                         >
                           <div>
                             <span className="text-[11px] text-[#6B6661] block mb-1">
-                              By {post.authorName} • {post.readingTimeMinutes} min read
+                              By {post.authorName}
                             </span>
                             <h3 className="font-serif text-base font-bold text-[#343131] group-hover:text-[#FF8F00] transition-colors leading-snug line-clamp-2">
                               {post.title}

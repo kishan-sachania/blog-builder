@@ -6,8 +6,8 @@ import { Navbar } from '@/components/common/Navbar';
 import { Footer } from '@/components/common/Footer';
 import { HeroSection } from '@/components/home/HeroSection';
 import { FeaturedStory } from '@/components/home/FeaturedStory';
-import { LatestStories } from '@/components/home/LatestStories';
-import { TopicsSection } from '@/components/home/TopicsSection';
+import { RecentStoriesGrid } from '@/components/home/RecentStoriesGrid';
+import { TopCategoriesSection } from '@/components/home/TopCategoriesSection';
 import { MissionSection } from '@/components/home/MissionSection';
 
 export const dynamic = 'force-dynamic';
@@ -17,22 +17,23 @@ export default async function HomePage() {
   const allPosts = await postService.getAllPosts({ status: 'published' });
   const categories = await categoryService.getAllCategories();
 
-  const featuredPost = allPosts.find(p => p.featured) || allPosts[0];
-  const remainingPosts = featuredPost
-    ? allPosts.filter(p => p.id !== featuredPost.id)
-    : allPosts;
+  const featuredPost = allPosts.find(p => p.featured);
 
   return (
-    <div className="h-screen flex flex-col bg-[#FAF8F5]">
+    <div className="min-h-screen flex flex-col bg-[#FAF8F5]">
       <Navbar initialUser={user} />
       <main className="flex-1">
         <HeroSection />
-        {/* {featuredPost && <FeaturedStory post={featuredPost} />} */}
-        {/* <LatestStories posts={remainingPosts} categories={categories} /> */}
-        {/* <TopicsSection categories={categories} /> */}
-        {/* <MissionSection /> */}
+
+        {featuredPost && <FeaturedStory post={featuredPost} />}
+
+        <RecentStoriesGrid posts={allPosts} categories={categories} />
+
+        <TopCategoriesSection categories={categories} allPosts={allPosts} />
+
+        <MissionSection />
       </main>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 }

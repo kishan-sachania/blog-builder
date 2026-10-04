@@ -33,7 +33,17 @@ const blogSchema = new Schema({
             ref: 'Tag',
             required: true,
         }
-    ]
+    ],
+    coverImage: {
+        type: String,
+        default: '',
+        trim: true,
+    },
+    views: {
+        type: Number,
+        default: 0,
+        min: 0,
+    }
 }, { timestamps: true });
 
 export const Blog = models.Blog || model('Blog', blogSchema);

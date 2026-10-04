@@ -6,6 +6,8 @@ export interface User {
   email: string;
   passwordHash: string;
   role: UserRole;
+  roleName?: string;
+  permissions?: { resource: string; action: string; name?: string }[];
   title: string;
   department: string;
   avatarUrl: string;
@@ -31,10 +33,9 @@ export interface Post {
   authorTitle: string;
   authorAvatar: string;
   status: PostStatus;
-  readingTimeMinutes: number;
   viewCount: number;
   featured?: boolean;
-  editorialNotes?: string; // feedback when rejected or requested changes
+  editorialNotes?: string;
   submittedAt?: string;
   publishedAt?: string;
   createdAt: string;
@@ -61,12 +62,6 @@ export interface ModerationLog {
   timestamp: string;
 }
 
-export interface Session {
-  token: string;
-  userId: string;
-  expiresAt: string;
-}
-
 export interface PlatformAnalytics {
   totalStories: number;
   publishedStories: number;
@@ -77,4 +72,12 @@ export interface PlatformAnalytics {
   categoryBreakdown: { name: string; count: number }[];
   recentSubmissions: Post[];
   recentLogs: ModerationLog[];
+  mostActiveEmployee?: {
+    id: string;
+    name: string;
+    email: string;
+    avatar?: string;
+    publishedCount: number;
+    views: number;
+  } | null;
 }

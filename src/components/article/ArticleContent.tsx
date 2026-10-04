@@ -15,7 +15,9 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({
   title,
   tags
 }) => {
-  // Simple markdown-to-editorial parser for headings, quotes, lists, bold, italics, code blocks
+  const isHtml = /<[a-z][\s\S]*>/i.test(content);
+
+  // Simple markdown-to-editorial parser fallback
   const renderFormattedBody = (rawContent: string) => {
     const paragraphs = rawContent.split('\n\n');
 
@@ -96,7 +98,6 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({
 
   // Helper for inline bold, italic, and inline code
   const renderInlineFormatting = (text: string) => {
-    // Basic regex replacers for bold **text** and `code`
     const parts = text.split(/(\*\*.*?\*\*|\*.*?\*|`.*?`)/g);
 
     return parts.map((part, i) => {
@@ -136,7 +137,14 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({
 
       {/* Editorial Body Content */}
       <div className="max-w-3xl mx-auto font-sans leading-relaxed selection:bg-[#FFB22C]/40">
-        {renderFormattedBody(content)}
+        {isHtml ? (
+          <div
+            className="prose-editorial"
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
+        ) : (
+          renderFormattedBody(content)
+        )}
       </div>
 
       {/* Tags section */}

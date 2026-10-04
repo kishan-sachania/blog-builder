@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { User } from '@/types';
 import { Avatar } from '@/components/common/Avatar';
-import { Shield, UserCheck, CheckCircle2, AlertCircle, ExternalLink } from 'lucide-react';
+import { Shield, UserCheck, CheckCircle2, ExternalLink } from 'lucide-react';
+import { useApi } from '@/hooks/useApi';
 
 interface AuthorWithStats extends User {
   publishedStoriesCount: number;
@@ -22,6 +23,8 @@ export const AuthorManager: React.FC<AuthorManagerProps> = ({ authors, currentUs
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
+  const { put } = useApi();
+
   const handleRoleToggle = async (targetUser: AuthorWithStats) => {
     if (targetUser.id === currentUserId) {
       alert("You cannot modify your own administrative privileges.");
@@ -37,18 +40,12 @@ export const AuthorManager: React.FC<AuthorManagerProps> = ({ authors, currentUs
 
     setUpdatingId(targetUser.id);
     try {
-      const res = await fetch(`/api/authors/${targetUser.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role: newRole })
-      });
-
-      if (!res.ok) throw new Error('Role update failed');
+      await put(`/api/user/${targetUser.id}`, { role: newRole });
       setMessage(`Updated ${targetUser.name}'s role to ${newRole}`);
       setTimeout(() => setMessage(null), 3000);
       router.refresh();
-    } catch (err) {
-      alert('Error updating user role');
+    } catch (err: any) {
+      alert(err.response?.data?.message || err.message || 'Error updating user role');
     } finally {
       setUpdatingId(null);
     }
@@ -146,11 +143,10 @@ export const AuthorManager: React.FC<AuthorManagerProps> = ({ authors, currentUs
                         type="button"
                         disabled={updatingId === author.id}
                         onClick={() => handleRoleToggle(author)}
-                        className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-colors ${
-                          author.role === 'admin'
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-colors ${author.role === 'admin'
                             ? 'border border-stone-300 text-stone-700 hover:bg-stone-100'
                             : 'bg-[#FAF3E0] text-[#8C5D00] hover:bg-[#FFB22C] hover:text-[#343131]'
-                        }`}
+                          }`}
                       >
                         {author.role === 'admin' ? 'Revoke Admin' : 'Make Admin'}
                       </button>

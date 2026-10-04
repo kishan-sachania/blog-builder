@@ -2,6 +2,7 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { postService } from '@/services/postService';
+import { incrementBlogViews } from '@/services/blogServices';
 import { authorService } from '@/services/authorService';
 import { getCurrentUser } from '@/lib/auth';
 import { Navbar } from '@/components/common/Navbar';
@@ -19,10 +20,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const post = await postService.getPostBySlug(slug) || await postService.getPostById(slug);
   if (!post) {
-    return { title: 'Story Not Found — The Common Thread' };
+    return { title: 'Story Not Found — Blog Builder' };
   }
   return {
-    title: `${post.title} — The Common Thread`,
+    title: `${post.title} — Blog Builder`,
     description: post.excerpt,
     openGraph: {
       title: post.title,
@@ -41,6 +42,11 @@ export default async function StoryReadingPage({ params }: PageProps) {
 
   if (!post) {
     notFound();
+  }
+
+  // Increment views in background
+  if (post.id) {
+    incrementBlogViews(post.id).catch(() => {});
   }
 
   const author = (await authorService.getAuthorById(post.authorId)) || {

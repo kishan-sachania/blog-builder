@@ -3,7 +3,6 @@ import { ApiResponse } from "@/lib/api-response";
 import { connectDB } from "@/lib/db";
 import { TokenServices } from "@/services/tokenServices";
 import { setAuthCookies } from "@/lib/cookies";
-import bcrypt from "bcrypt";
 import { ERole } from "@/lib/util";
 
 export const POST = async (req: Request) => {
@@ -14,16 +13,16 @@ export const POST = async (req: Request) => {
         }
 
         const { name, email, password } = body;
+        if (!name || !email || !password) {
+            return ApiResponse.error(400, false, "Name, email, and password are required", null);
+        }
 
         await connectDB();
-
-        // Hash password before saving
-        const hashedPassword = await bcrypt.hash(password, 10);
 
         const createdUser = await createUser({
             name,
             email,
-            password: hashedPassword,
+            password,
             role: ERole.EMPLOYEE,
         });
 
@@ -31,10 +30,14 @@ export const POST = async (req: Request) => {
             id: createdUser._id.toString(),
             name: createdUser.name,
             email: createdUser.email,
-            role: createdUser.role,
+            role: 'employee',
         };
 
-        const { accessToken, refreshToken } = TokenServices.generateTokens(safeUser);
+        const { accessToken, refreshToken } = TokenServices.generateTokens({
+            id: createdUser._id.toString(),
+            email: createdUser.email,
+            tokenVersion: createdUser.tokenVersion,
+        });
 
         const response = ApiResponse.success(201, true, "User registered successfully", {
             user: safeUser,
@@ -42,7 +45,6 @@ export const POST = async (req: Request) => {
             refreshToken,
         });
 
-        // Set server-side cookies
         setAuthCookies(response, accessToken, refreshToken);
 
         return response;

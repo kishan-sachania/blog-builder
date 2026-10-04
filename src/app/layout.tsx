@@ -14,7 +14,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "The Common Thread — Internal Editorial Platform",
+  title: "Blog Builder — Internal Editorial Platform",
   description: "An intentional editorial platform for company insights, engineering architecture, design craft, and cultural reflections.",
 };
 
@@ -27,8 +27,12 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${newsreader.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col font-sans bg-[#FAF8F5] text-[#343131] selection:bg-[#FFB22C]/30 selection:text-[#343131]">
+      <body
+        className="min-h-full flex flex-col font-sans bg-[#FAF8F5] text-[#343131] selection:bg-[#FFB22C]/30 selection:text-[#343131]"
+        suppressHydrationWarning
+      >
         {children}
       </body>
     </html>

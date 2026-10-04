@@ -5,7 +5,9 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { User } from '@/types';
 import { Avatar } from './Avatar';
-import { Feather, BookOpen, PenSquare, Shield, LogOut, User as UserIcon, Menu, X, Compass } from 'lucide-react';
+import { Feather, BookOpen, PenSquare, LogOut, User as UserIcon, Menu, X } from 'lucide-react';
+import { useApi } from '@/hooks/useApi';
+import { apiClient } from '@/lib/axios';
 
 interface NavbarProps {
   initialUser?: User | null;
@@ -21,18 +23,19 @@ export const Navbar: React.FC<NavbarProps> = ({ initialUser }) => {
   useEffect(() => {
     // Check session on mount if not provided
     if (initialUser === undefined) {
-      fetch('/api/auth/me')
-        .then(res => res.json())
-        .then(data => {
-          if (data.user) setUser(data.user);
+      apiClient.get('/api/auth/me')
+        .then(res => {
+          if (res.data?.user) setUser(res.data.user);
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   }, [initialUser]);
 
+  const { post } = useApi();
+
   const handleLogout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
+      await post('/api/auth/logout');
       setUser(null);
       setIsDropdownOpen(false);
       router.push('/auth/login');
@@ -54,7 +57,7 @@ export const Navbar: React.FC<NavbarProps> = ({ initialUser }) => {
               </div>
               <div className="flex flex-col">
                 <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-[#343131] group-hover:text-[#FF8F00] transition-colors leading-none">
-                  The Common Thread
+                  Blog Builder
                 </span>
                 <span className="text-[11px] uppercase tracking-widest text-[#6B6661] mt-1 font-medium">
                   Editorial Publication
@@ -66,17 +69,15 @@ export const Navbar: React.FC<NavbarProps> = ({ initialUser }) => {
             <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
               <Link
                 href="/"
-                className={`transition-colors hover:text-[#FF8F00] ${
-                  pathname === '/' ? 'text-[#343131] font-semibold' : 'text-[#6B6661]'
-                }`}
+                className={`transition-colors hover:text-[#FF8F00] ${pathname === '/' ? 'text-[#343131] font-semibold' : 'text-[#6B6661]'
+                  }`}
               >
                 Stories
               </Link>
               <Link
                 href="/topics"
-                className={`transition-colors hover:text-[#FF8F00] ${
-                  pathname.startsWith('/topics') ? 'text-[#343131] font-semibold' : 'text-[#6B6661]'
-                }`}
+                className={`transition-colors hover:text-[#FF8F00] ${pathname.startsWith('/topics') ? 'text-[#343131] font-semibold' : 'text-[#6B6661]'
+                  }`}
               >
                 Topics
               </Link>
@@ -104,17 +105,6 @@ export const Navbar: React.FC<NavbarProps> = ({ initialUser }) => {
                   <BookOpen className="w-3.5 h-3.5" />
                   <span>Author Studio</span>
                 </Link>
-
-                {/* Admin Link if role is admin */}
-                {user.role === 'admin' && (
-                  <Link
-                    href="/admin"
-                    className="inline-flex items-center space-x-1.5 px-3 py-2 text-xs font-medium bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100 rounded-lg transition-colors"
-                  >
-                    <Shield className="w-3.5 h-3.5 text-[#FF8F00]" />
-                    <span>Admin Panel</span>
-                  </Link>
-                )}
 
                 {/* User Dropdown */}
                 <div className="relative">
@@ -152,18 +142,8 @@ export const Navbar: React.FC<NavbarProps> = ({ initialUser }) => {
                         className="flex items-center space-x-2 px-4 py-2 text-xs text-[#343131] hover:bg-[#FAF8F5] transition-colors"
                       >
                         <BookOpen className="w-4 h-4 text-[#6B6661]" />
-                        <span>My Stories & Drafts</span>
+                        <span>Author Studio</span>
                       </Link>
-
-                      {user.role === 'admin' && (
-                        <Link
-                          href="/admin"
-                          className="flex items-center space-x-2 px-4 py-2 text-xs text-[#343131] hover:bg-[#FAF8F5] transition-colors"
-                        >
-                          <Shield className="w-4 h-4 text-[#FF8F00]" />
-                          <span>Admin Dashboard</span>
-                        </Link>
-                      )}
 
                       <div className="border-t border-[#EAE6DF] my-1" />
 
@@ -259,16 +239,6 @@ export const Navbar: React.FC<NavbarProps> = ({ initialUser }) => {
                   <BookOpen className="w-4 h-4" />
                   <span>Author Studio</span>
                 </Link>
-                {user.role === 'admin' && (
-                  <Link
-                    href="/admin"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium text-amber-900 bg-amber-50"
-                  >
-                    <Shield className="w-4 h-4 text-[#FF8F00]" />
-                    <span>Admin Dashboard</span>
-                  </Link>
-                )}
                 <button
                   onClick={handleLogout}
                   className="w-full flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium text-rose-700 hover:bg-rose-50"

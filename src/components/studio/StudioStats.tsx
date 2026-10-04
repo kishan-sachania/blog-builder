@@ -1,10 +1,9 @@
 import React from 'react';
-import { FileText, CheckCircle2, Clock, FileEdit, Eye } from 'lucide-react';
+import { FileText, CheckCircle2, FileEdit, Eye } from 'lucide-react';
 
 interface StudioStatsProps {
   total: number;
   published: number;
-  inReview: number;
   drafts: number;
   views: number;
 }
@@ -12,7 +11,6 @@ interface StudioStatsProps {
 export const StudioStats: React.FC<StudioStatsProps> = ({
   total,
   published,
-  inReview,
   drafts,
   views
 }) => {
@@ -22,7 +20,7 @@ export const StudioStats: React.FC<StudioStatsProps> = ({
       value: total,
       icon: FileText,
       color: 'text-stone-700 bg-stone-100',
-      description: 'Total written'
+      description: 'Total authored'
     },
     {
       label: 'Published',
@@ -32,30 +30,23 @@ export const StudioStats: React.FC<StudioStatsProps> = ({
       description: 'Live in public journal'
     },
     {
-      label: 'In Review',
-      value: inReview,
-      icon: Clock,
-      color: 'text-amber-700 bg-amber-100',
-      description: 'Awaiting editor review'
-    },
-    {
       label: 'Drafts',
       value: drafts,
       icon: FileEdit,
-      color: 'text-blue-700 bg-blue-100',
-      description: 'In-progress drafts'
+      color: 'text-amber-700 bg-amber-100',
+      description: 'Saved work in progress'
     },
     {
       label: 'Total Reads',
       value: views,
       icon: Eye,
       color: 'text-orange-700 bg-orange-100',
-      description: 'Cumulative views'
+      description: 'Cumulative reader views'
     }
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       {cards.map(card => {
         const Icon = card.icon;
         return (

@@ -5,55 +5,48 @@ import { getCurrentUser } from '@/lib/auth';
 import { StudioSidebar } from '@/components/studio/StudioSidebar';
 import { StudioStats } from '@/components/studio/StudioStats';
 import { StoryTable } from '@/components/studio/StoryTable';
-import { PenSquare } from 'lucide-react';
+import { PenSquare, Shield } from 'lucide-react';
+
+import { redirect } from 'next/navigation';
 
 interface PageProps {
   searchParams: Promise<{ tab?: string }>;
 }
 
 export const metadata = {
-  title: 'Author Studio — The Common Thread',
-  description: 'Manage your drafts, submissions, and published essays.',
+  title: 'Author Studio — Blog Builder',
+  description: 'Manage your drafts and published essays.',
 };
 
 export const dynamic = 'force-dynamic';
 
 export default async function StudioPage({ searchParams }: PageProps) {
-  const user = await getCurrentUser() || {
-    id: 'guest',
-    name: 'Author',
-    email: '',
-    passwordHash: '',
-    role: 'employee',
-    title: 'Staff Contributor',
-    department: 'Editorial',
-    avatarUrl: '',
-    bio: '',
-    joinedDate: '',
-    createdAt: ''
-  };
+  const user = await getCurrentUser();
+  if (!user) {
+    redirect('/auth/login');
+  }
 
   const { tab = 'all' } = await searchParams;
   const authorPosts = await postService.getAllPosts({ authorId: user.id });
 
   const counts = {
     total: authorPosts.length,
-    drafts: authorPosts.filter(p => p.status === 'draft').length,
-    inReview: authorPosts.filter(p => p.status === 'in_review').length,
-    published: authorPosts.filter(p => p.status === 'published').length,
-    rejected: authorPosts.filter(p => p.status === 'rejected').length,
-    views: authorPosts.reduce((acc, p) => acc + (p.viewCount || 0), 0)
+    drafts: authorPosts.filter((p) => p.status === 'draft').length,
+    published: authorPosts.filter((p) => p.status === 'published').length,
+    views: authorPosts.reduce((acc, p) => acc + (p.viewCount || 0), 0),
   };
 
   let filteredStories = authorPosts;
   if (tab !== 'all') {
-    filteredStories = authorPosts.filter(p => p.status === tab);
+    filteredStories = authorPosts.filter((p) => p.status === tab);
   }
+
+  const isAdmin = user.role === 'admin';
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] flex">
       <Suspense fallback={<div className="w-64 bg-white border-r" />}>
-        <StudioSidebar user={user} counts={counts} />
+        <StudioSidebar user={user} counts={{ total: counts.total }} />
       </Suspense>
 
       <main className="flex-1 p-6 sm:p-8 lg:p-10 max-w-6xl overflow-y-auto">
@@ -63,33 +56,41 @@ export default async function StudioPage({ searchParams }: PageProps) {
               Author Studio
             </h1>
             <p className="text-xs sm:text-sm text-[#6B6661] mt-0.5">
-              Welcome to your writing studio. Manage drafts and track editorial submissions.
+              Welcome to your writing studio. Write, publish, and manage your articles freely.
             </p>
           </div>
 
-          <Link
-            href="/studio/new"
-            className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-all shadow-xs shrink-0"
-          >
-            <PenSquare className="w-4 h-4" />
-            <span>Write a New Story</span>
-          </Link>
+          <div className="flex items-center space-x-3 shrink-0">
+            {isAdmin && (
+              <Link
+                href="/admin"
+                className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#232020] text-[#FFB22C] hover:bg-[#343131] hover:text-white transition-all shadow-xs border border-[#343131]"
+              >
+                <Shield className="w-4 h-4 text-[#FFB22C]" />
+                <span>Admin Panel</span>
+              </Link>
+            )}
+
+            <Link
+              href="/studio/new"
+              className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-all shadow-xs"
+            >
+              <PenSquare className="w-4 h-4" />
+              <span>Write a New Story</span>
+            </Link>
+          </div>
         </div>
 
         <div className="mb-8">
           <StudioStats
             total={counts.total}
             published={counts.published}
-            inReview={counts.inReview}
             drafts={counts.drafts}
             views={counts.views}
           />
         </div>
 
-        <StoryTable
-          stories={filteredStories}
-          title="My Stories"
-        />
+        <StoryTable stories={filteredStories} title="My Stories & Drafts" />
       </main>
     </div>
   );

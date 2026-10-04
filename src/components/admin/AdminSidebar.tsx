@@ -8,31 +8,28 @@ import { Avatar } from '@/components/common/Avatar';
 import {
   Shield,
   LayoutDashboard,
-  Clock,
   BookOpen,
   Users,
   FolderTree,
   ExternalLink,
   LogOut,
-  PenSquare,
-  Feather
+  PenSquare
 } from 'lucide-react';
+import { useApi } from '@/hooks/useApi';
 
 interface AdminSidebarProps {
   user: User;
   pendingReviewsCount?: number;
 }
 
-export const AdminSidebar: React.FC<AdminSidebarProps> = ({
-  user,
-  pendingReviewsCount = 0
-}) => {
+export const AdminSidebar: React.FC<AdminSidebarProps> = ({ user }) => {
   const pathname = usePathname();
   const router = useRouter();
+  const { post } = useApi();
 
   const handleLogout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
+      await post('/api/auth/logout');
       router.push('/auth/login');
       router.refresh();
     } catch (e) {
@@ -48,12 +45,10 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       isActive: pathname === '/admin'
     },
     {
-      label: 'Review Queue',
-      href: '/admin/moderation',
-      icon: Clock,
-      count: pendingReviewsCount,
-      isActive: pathname === '/admin/moderation',
-      highlightCount: true
+      label: 'Manage Users',
+      href: '/admin/users',
+      icon: Users,
+      isActive: pathname === '/admin/users'
     },
     {
       label: 'All Stories Index',
@@ -66,17 +61,11 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       href: '/admin/categories',
       icon: FolderTree,
       isActive: pathname === '/admin/categories'
-    },
-    {
-      label: 'Authors & Governance',
-      href: '/admin/authors',
-      icon: Users,
-      isActive: pathname === '/admin/authors'
     }
   ];
 
   return (
-    <aside className="w-64 bg-[#232020] text-[#FAF8F5] min-h-screen flex flex-col justify-between shrink-0">
+    <aside className="w-64 bg-[#232020] text-[#FAF8F5] h-screen sticky top-0 flex flex-col justify-between shrink-0 overflow-y-auto border-r border-[#343131]">
       <div className="p-5 space-y-6">
         {/* Brand header */}
         <Link href="/" className="flex items-center space-x-2.5 group">
@@ -85,7 +74,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           </div>
           <div>
             <span className="font-serif font-bold text-base text-[#FAF8F5] block leading-tight">
-              The Common Thread
+              Blog Builder
             </span>
             <span className="text-[10px] uppercase tracking-wider text-[#FFB22C] font-semibold">
               Editorial Board Admin
@@ -110,27 +99,15 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
               <Link
                 key={item.label}
                 href={item.href}
-                className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
-                  item.isActive
+                className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors ${item.isActive
                     ? 'bg-[#FFB22C] text-[#343131] font-bold'
                     : 'text-[#C7C2BA] hover:bg-white/5 hover:text-white'
-                }`}
+                  }`}
               >
                 <div className="flex items-center space-x-2.5">
                   <Icon className="w-4 h-4 shrink-0" />
                   <span>{item.label}</span>
                 </div>
-                {item.count !== undefined && item.count > 0 && (
-                  <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      item.isActive
-                        ? 'bg-[#343131] text-[#FAF8F5]'
-                        : 'bg-[#FF8F00] text-white animate-pulse'
-                    }`}
-                  >
-                    {item.count}
-                  </span>
-                )}
               </Link>
             );
           })}
@@ -150,10 +127,10 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         <div className="flex items-center justify-between text-xs pt-1 border-t border-white/5">
           <Link
             href="/"
-            className="flex items-center space-x-1 text-[#A8A29E] hover:text-white transition-colors"
+            className="flex items-center space-x-1 text-[#96918B] hover:text-white transition-colors"
           >
             <ExternalLink className="w-3.5 h-3.5" />
-            <span className="text-[11px]">Public Blog</span>
+            <span className="text-[11px]">View Site</span>
           </Link>
 
           <button
@@ -161,7 +138,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             className="flex items-center space-x-1 text-rose-400 hover:text-rose-300 transition-colors cursor-pointer"
           >
             <LogOut className="w-3.5 h-3.5" />
-            <span className="text-[11px]">Sign Out</span>
+            <span className="text-[11px] font-medium">Log out</span>
           </button>
         </div>
       </div>

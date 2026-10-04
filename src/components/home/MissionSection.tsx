@@ -12,11 +12,11 @@ export const MissionSection: React.FC = () => {
           </div>
 
           <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#343131] tracking-tight">
-            Why We Publish &ldquo;The Common Thread&rdquo;
+            Why We Publish &ldquo;Blog Builder&rdquo;
           </h2>
 
           <p className="text-base sm:text-lg text-[#6B6661] leading-relaxed font-light">
-            In any ambitious enterprise, institutional wisdom is too easily lost in fleeting chat channels, private tickets, and forgotten slide decks. <em>The Common Thread</em> is our collective archive: an intentional editorial medium where any employee can document first principles, synthesize technical decisions, and elevate team culture.
+            In any ambitious enterprise, institutional wisdom is too easily lost in fleeting chat channels, private tickets, and forgotten slide decks. <em>Blog Builder</em> is our collective archive: an intentional editorial medium where any employee can document first principles, synthesize technical decisions, and elevate team culture.
           </p>
         </div>
 

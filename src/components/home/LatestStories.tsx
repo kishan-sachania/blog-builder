@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Post, Category } from '@/types';
 import { Avatar } from '@/components/common/Avatar';
-import { Clock, Calendar, Eye, Search, ArrowRight, Tag } from 'lucide-react';
+import { Calendar, Eye, Search, ArrowRight, Tag } from 'lucide-react';
 
 interface LatestStoriesProps {
   posts: Post[];
@@ -82,11 +82,10 @@ export const LatestStories: React.FC<LatestStoriesProps> = ({ posts, categories 
         <div className="flex items-center space-x-2 overflow-x-auto py-5 scrollbar-none">
           <button
             onClick={() => setSelectedCategory('all')}
-            className={`px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
-              selectedCategory === 'all'
+            className={`px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${selectedCategory === 'all'
                 ? 'bg-[#343131] text-[#FAF8F5]'
                 : 'bg-white border border-[#EAE6DF] text-[#6B6661] hover:bg-[#FAF8F5] hover:text-[#343131]'
-            }`}
+              }`}
           >
             All Perspectives ({posts.filter(p => p.status === 'published').length})
           </button>
@@ -95,11 +94,10 @@ export const LatestStories: React.FC<LatestStoriesProps> = ({ posts, categories 
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
-                selectedCategory === cat.id
+              className={`px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${selectedCategory === cat.id
                   ? 'bg-[#343131] text-[#FAF8F5]'
                   : 'bg-white border border-[#EAE6DF] text-[#6B6661] hover:bg-[#FAF8F5] hover:text-[#343131]'
-              }`}
+                }`}
             >
               {cat.name}
             </button>
@@ -125,15 +123,15 @@ export const LatestStories: React.FC<LatestStoriesProps> = ({ posts, categories 
             {sortedPosts.map(post => {
               const formattedDate = post.publishedAt
                 ? new Date(post.publishedAt).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric'
-                  })
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric'
+                })
                 : new Date(post.createdAt).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric'
-                  });
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric'
+                });
 
               return (
                 <article
@@ -177,10 +175,6 @@ export const LatestStories: React.FC<LatestStoriesProps> = ({ posts, categories 
                     {/* Bottom Metadata & Tags */}
                     <div className="pt-2 flex flex-wrap items-center justify-between gap-3 text-xs text-[#6B6661]">
                       <div className="flex items-center space-x-3">
-                        <span className="flex items-center">
-                          <Clock className="w-3.5 h-3.5 mr-1 text-[#96918B]" />
-                          {post.readingTimeMinutes} min read
-                        </span>
                         {post.viewCount > 0 && (
                           <span className="flex items-center">
                             <Eye className="w-3.5 h-3.5 mr-1 text-[#96918B]" />
@@ -213,14 +207,22 @@ export const LatestStories: React.FC<LatestStoriesProps> = ({ posts, categories 
                   {/* Thumbnail Cover image */}
                   <div className="md:col-span-4 order-first md:order-last">
                     <Link href={`/stories/${post.slug}`} className="block relative aspect-16/10 rounded-xl overflow-hidden bg-[#EAE6DF] border border-[#EAE6DF] shadow-2xs">
-                      <Image
-                        src={post.coverImage}
-                        alt={post.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                        className="object-cover group-hover:scale-104 transition-transform duration-500 ease-out"
-                        unoptimized
-                      />
+                      {post.coverImage ? (
+                        <Image
+                          src={post.coverImage}
+                          alt={post.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          className="object-cover group-hover:scale-104 transition-transform duration-500 ease-out"
+                          unoptimized
+                        />
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#FAF3E0] to-[#F2ECE1] p-4 text-center">
+                          <span className="font-serif font-bold text-sm text-[#343131] line-clamp-2 px-3">
+                            {post.title}
+                          </span>
+                        </div>
+                      )}
                     </Link>
                   </div>
                 </article>

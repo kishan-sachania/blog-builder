@@ -1,23 +1,44 @@
-import axios from 'axios';
+import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
 export const apiClient = axios.create({
   baseURL: '',
-  withCredentials: true, // Browser automatically attaches httpOnly cookies with requests
+  withCredentials: true, 
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Response interceptor: redirect on 401 Unauthorized
+let refreshPromise: Promise<unknown> | null = null;
+
+const redirectToLogin = () => {
+  if (!window.location.pathname.startsWith('/auth/')) {
+    window.location.href = '/auth/login';
+  }
+};
+
 apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401 && typeof window !== 'undefined') {
-      if (!window.location.pathname.startsWith('/auth/')) {
-        window.location.href = '/auth/login';
-      }
+  (res) => res,
+  async (error: AxiosError) => {
+    const original = error.config as (InternalAxiosRequestConfig & { _retry?: boolean }) | undefined;
+    const isAuthUrl = original?.url?.includes('/api/auth/');
+
+    if (error.response?.status !== 401 || !original || original._retry || isAuthUrl) {
+      return Promise.reject(error);
     }
-    return Promise.reject(error);
+
+    original._retry = true;
+
+    refreshPromise ??= axios
+      .post('/api/auth/refresh', {}, { withCredentials: true })
+      .finally(() => { refreshPromise = null; });
+
+    try {
+      await refreshPromise;
+      return apiClient(original);
+    } catch (e) {
+      redirectToLogin();
+      return Promise.reject(e);
+    }
   }
 );
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Feather, ArrowUpRight } from 'lucide-react';
+import { Feather } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
@@ -14,7 +14,7 @@ export const Footer: React.FC = () => {
                 <Feather className="w-4 h-4" />
               </div>
               <span className="font-serif text-xl font-bold tracking-tight text-[#343131]">
-                The Common Thread
+                Blog Builder
               </span>
             </div>
             <p className="text-sm text-[#6B6661] max-w-md leading-relaxed">
@@ -36,11 +36,6 @@ export const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-2 text-sm text-[#343131]">
               <li>
-                <Link href="/" className="hover:text-[#FF8F00] transition-colors">
-                  Featured Stories
-                </Link>
-              </li>
-              <li>
                 <Link href="/topics" className="hover:text-[#FF8F00] transition-colors">
                   Explore Topics & Archives
                 </Link>
@@ -51,8 +46,8 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/admin" className="hover:text-[#FF8F00] transition-colors">
-                  Editorial Moderation Queue
+                <Link href="/#about" className="hover:text-[#FF8F00] transition-colors">
+                  About the Publication
                 </Link>
               </li>
             </ul>
@@ -73,18 +68,13 @@ export const Footer: React.FC = () => {
               <li>
                 <span className="text-[#6B6661]">Constructive discourse</span>
               </li>
-              <li>
-                <Link href="/auth/login" className="inline-flex items-center text-xs font-semibold text-[#FF8F00] hover:underline mt-2">
-                  Staff Login <ArrowUpRight className="w-3 h-3 ml-1" />
-                </Link>
-              </li>
             </ul>
           </div>
         </div>
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-[#EAE6DF] flex flex-col sm:flex-row items-center justify-between text-xs text-[#6B6661] gap-4">
-          <p>© {new Date().getFullYear()} The Common Thread. Designed for internal company discourse.</p>
+          <p>© {new Date().getFullYear()} Blog Builder. Designed for internal company discourse.</p>
           <div className="flex items-center space-x-6">
             <span className="hover:text-[#343131]">Privacy & Confidentiality</span>
             <span>•</span>

@@ -4,20 +4,13 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Post } from '@/types';
 import { Avatar } from '@/components/common/Avatar';
-import { Badge } from '@/components/common/Badge';
 import { ModerationModal } from './ModerationModal';
-import {
-  CheckCircle2,
-  XCircle,
-  Eye,
-  Clock,
-  Calendar,
-  Sparkles,
-  Inbox
-} from 'lucide-react';
+import { CheckCircle2, Eye, Calendar } from 'lucide-react';
+
+import { useApi } from '@/hooks/useApi';
 
 interface ModerationQueueProps {
-  pendingPosts: Post[];
+  pendingPosts: any[];
   title?: string;
 }
 
@@ -26,22 +19,17 @@ export const ModerationQueue: React.FC<ModerationQueueProps> = ({
   title = 'Pending Editorial Review Queue'
 }) => {
   const router = useRouter();
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [selectedPost, setSelectedPost] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quickProcessingId, setQuickProcessingId] = useState<string | null>(null);
+  const { put } = useApi();
 
   const handleQuickApprove = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setQuickProcessingId(id);
 
     try {
-      const res = await fetch(`/api/posts/${id}/moderate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'approved', notes: 'Approved via quick review.' })
-      });
-
-      if (!res.ok) throw new Error('Approve failed');
+      await put(`/api/blog/${id}`, { status: 'published' });
       router.refresh();
     } catch (err) {
       alert('Error approving story');
@@ -90,15 +78,15 @@ export const ModerationQueue: React.FC<ModerationQueueProps> = ({
           {pendingPosts.map(post => {
             const submittedDate = post.submittedAt
               ? new Date(post.submittedAt).toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
-                })
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              })
               : new Date(post.createdAt).toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric'
-                });
+                month: 'short',
+                day: 'numeric'
+              });
 
             return (
               <div

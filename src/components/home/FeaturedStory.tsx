@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Post } from '@/types';
 import { Avatar } from '@/components/common/Avatar';
-import { Clock, Calendar, ArrowRight } from 'lucide-react';
+import { Calendar, ArrowRight } from 'lucide-react';
 
 interface FeaturedStoryProps {
   post: Post;
@@ -12,15 +12,15 @@ interface FeaturedStoryProps {
 export const FeaturedStory: React.FC<FeaturedStoryProps> = ({ post }) => {
   const formattedDate = post.publishedAt
     ? new Date(post.publishedAt).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      })
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    })
     : new Date(post.createdAt).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      });
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
 
   return (
     <section className="py-12 border-b border-[#EAE6DF]">
@@ -35,15 +35,26 @@ export const FeaturedStory: React.FC<FeaturedStoryProps> = ({ post }) => {
           <div className="lg:col-span-7">
             <Link href={`/stories/${post.slug}`} className="group block overflow-hidden rounded-2xl bg-[#EAE6DF] border border-[#EAE6DF] shadow-sm">
               <div className="relative aspect-16/10 w-full overflow-hidden">
-                <Image
-                  src={post.coverImage}
-                  alt={post.title}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 60vw"
-                  className="object-cover group-hover:scale-102 transition-transform duration-500 ease-out"
-                  priority
-                  unoptimized
-                />
+                {post.coverImage ? (
+                  <Image
+                    src={post.coverImage}
+                    alt={post.title}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 60vw"
+                    className="object-cover group-hover:scale-102 transition-transform duration-500 ease-out"
+                    priority
+                    unoptimized
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#FAF3E0] to-[#F2ECE1] p-8 text-center space-y-3">
+                    <span className="text-xs uppercase tracking-widest font-bold text-[#8C5D00] bg-[#FFB22C]/30 px-3 py-1 rounded-full">
+                      {post.categoryName}
+                    </span>
+                    <span className="font-serif font-bold text-2xl text-[#343131] max-w-md line-clamp-2">
+                      {post.title}
+                    </span>
+                  </div>
+                )}
               </div>
             </Link>
           </div>
@@ -53,10 +64,6 @@ export const FeaturedStory: React.FC<FeaturedStoryProps> = ({ post }) => {
             <div className="flex items-center space-x-2">
               <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#FFB22C]/20 text-[#8C5D00]">
                 {post.categoryName}
-              </span>
-              <span className="text-xs text-[#6B6661] flex items-center">
-                <Clock className="w-3.5 h-3.5 mr-1" />
-                {post.readingTimeMinutes} min read
               </span>
             </div>
 

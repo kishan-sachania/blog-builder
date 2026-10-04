@@ -117,3 +117,33 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #C4BCAD;
 }
+
+/* Quill Rich Text Editor styling */
+.ql-toolbar.ql-snow {
+  border: 1px solid #EAE6DF !important;
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+  background-color: #FAF8F5;
+  padding: 0.75rem !important;
+}
+
+.ql-container.ql-snow {
+  border: 1px solid #EAE6DF !important;
+  border-top: none !important;
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  font-size: 1rem;
+  min-height: 280px;
+}
+
+.ql-editor {
+  min-height: 280px;
+  line-height: 1.7;
+  font-family: var(--font-sans), sans-serif;
+  color: #343131;
+}
+
+.ql-editor.ql-blank::before {
+  color: #C2BCB3 !important;
+  font-style: normal !important;
+}
