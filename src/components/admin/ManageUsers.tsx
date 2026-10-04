@@ -97,7 +97,7 @@ const CreateUserForm: React.FC<{
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <label className="block text-xs font-semibold text-[#343131]">
-              Temporary Password <span className="text-rose-500">*</span>
+              Password <span className="text-rose-500">*</span>
             </label>
             <span className="text-[10px] text-[#96918B]">Min 6 chars</span>
           </div>
