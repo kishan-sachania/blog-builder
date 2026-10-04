@@ -1,12 +1,11 @@
 import React, { Suspense } from 'react';
 import Link from 'next/link';
-import { postService } from '@/services/postService';
+import { redirect } from 'next/navigation';
+import { blogService } from '@/services/blogService';
 import { getCurrentUser } from '@/lib/auth';
 import { StudioSidebar } from '@/components/studio/StudioSidebar';
 import { StoryTable } from '@/components/studio/StoryTable';
 import { PenSquare, Shield } from 'lucide-react';
-
-import { redirect } from 'next/navigation';
 
 export const metadata = {
   title: 'All My Stories - Blog Builder Studio',
@@ -21,7 +20,7 @@ export default async function StudioAllStoriesPage() {
     redirect('/auth/login');
   }
 
-  const authorPosts = await postService.getAllPosts({ authorId: user.id });
+  const authorPosts = await blogService.getAllPosts({ authorId: user.id });
 
   const counts = {
     total: authorPosts.length,

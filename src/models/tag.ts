@@ -1,4 +1,4 @@
-import { model, models, Schema } from "mongoose";
+import { model, models, Schema } from 'mongoose';
 
 const tagSchema = new Schema(
   {
@@ -8,7 +8,6 @@ const tagSchema = new Schema(
       trim: true,
       unique: true,
     },
-
     slug: {
       type: String,
       required: true,

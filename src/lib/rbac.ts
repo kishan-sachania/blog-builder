@@ -1,22 +1,37 @@
-import { NextRequest } from "next/server";
-import { connectDB } from "@/lib/db";
-import { ApiResponse } from "@/lib/api-response";
-import { User } from "../../models/user";
-import { Role } from "../../models/role";
-import { Permission } from "../../models/permission";
-import { getRole } from "@/services/roleServices";
-import { TokenServices } from "@/services/tokenServices";
+import { NextRequest } from 'next/server';
+import { connectDB } from '@/lib/db';
+import { ApiResponse } from '@/lib/api-response';
+import { User } from '@/models';
+import { getRole } from '@/services/roleService';
+import { verifyAccessToken } from '@/services/tokenService';
+import { getRoleName, isAdminRole } from '@/lib/auth';
 
-void Role;
-void Permission;
-
-export type Action = "create" | "read" | "update" | "delete";
+export type Action = 'create' | 'read' | 'update' | 'delete';
 
 export type RouteHandler = (
   req: NextRequest,
   ctx: any,
   user: any
 ) => Promise<Response> | Response;
+
+export const permissionsToSeed = [
+  { name: 'blog:create', resource: 'blog', action: 'create' },
+  { name: 'blog:read', resource: 'blog', action: 'read' },
+  { name: 'blog:update', resource: 'blog', action: 'update' },
+  { name: 'blog:delete', resource: 'blog', action: 'delete' },
+  { name: 'user:create', resource: 'user', action: 'create' },
+  { name: 'user:read', resource: 'user', action: 'read' },
+  { name: 'user:update', resource: 'user', action: 'update' },
+  { name: 'user:delete', resource: 'user', action: 'delete' },
+  { name: 'category:create', resource: 'category', action: 'create' },
+  { name: 'category:read', resource: 'category', action: 'read' },
+  { name: 'category:update', resource: 'category', action: 'update' },
+  { name: 'category:delete', resource: 'category', action: 'delete' },
+  { name: 'tag:create', resource: 'tag', action: 'create' },
+  { name: 'tag:read', resource: 'tag', action: 'read' },
+  { name: 'tag:update', resource: 'tag', action: 'update' },
+  { name: 'tag:delete', resource: 'tag', action: 'delete' },
+];
 
 /**
  * Checks if a user has a specific permission or role privileges.
@@ -31,32 +46,19 @@ export function hasPermission(
   let targetResource = resourceOrPermission;
   let targetAction = action;
 
-  if (!targetAction && resourceOrPermission.includes(":")) {
-    const parts = resourceOrPermission.split(":");
+  if (!targetAction && resourceOrPermission.includes(':')) {
+    const parts = resourceOrPermission.split(':');
     targetResource = parts[0];
     targetAction = parts[1];
   }
 
-  let roleName = "employee";
-  if (typeof user.role === "string") {
-    roleName = user.role.toLowerCase();
-  } else if (user.role && typeof user.role === "object" && user.role.name) {
-    roleName = user.role.name.toLowerCase();
-  } else if (user.roleName) {
-    roleName = user.roleName.toLowerCase();
-  }
-
   // Admin users bypass and have full access
-  if (
-    roleName === "admin" ||
-    roleName === "administrator" ||
-    roleName === "superadmin"
-  ) {
+  if (isAdminRole(user)) {
     return true;
   }
 
   const permissions: any[] =
-    user.role && typeof user.role === "object" && Array.isArray(user.role.permissions)
+    user.role && typeof user.role === 'object' && Array.isArray(user.role.permissions)
       ? user.role.permissions
       : Array.isArray(user.permissions)
       ? user.permissions
@@ -64,20 +66,20 @@ export function hasPermission(
 
   return permissions.some((perm) => {
     if (!perm) return false;
-    if (typeof perm === "string") {
+    if (typeof perm === 'string') {
       return (
         perm === `${targetResource}:${targetAction}` ||
         perm === `${targetResource}:*` ||
-        perm === "*:*" ||
-        perm === "*"
+        perm === '*:*' ||
+        perm === '*'
       );
     }
     const pResource = perm.resource;
     const pAction = perm.action;
     const pName = perm.name;
 
-    if (pResource === "*" && pAction === "*") return true;
-    if (pResource === targetResource && (pAction === targetAction || pAction === "*")) return true;
+    if (pResource === '*' && pAction === '*') return true;
+    if (pResource === targetResource && (pAction === targetAction || pAction === '*')) return true;
     if (pName && targetAction && pName === `${targetResource}:${targetAction}`) return true;
     if (pName && pName === targetResource) return true;
 
@@ -85,10 +87,18 @@ export function hasPermission(
   });
 }
 
-/**
- * Route middleware wrapper that verifies JWT identity and dynamically authorizes
- * based on current user role and permissions from MongoDB.
- */
+function extractToken(req: NextRequest): string | null {
+  const authHeader = req.headers.get('authorization');
+  if (authHeader?.startsWith('Bearer ')) {
+    return authHeader.substring(7).trim();
+  }
+  return req.cookies.get('accessToken')?.value || req.cookies.get('token')?.value || null;
+}
+
+/*
+  Route middleware wrapper that verifies JWT identity and dynamically authorizes
+  based on current user role and permissions from MongoDB.
+*/
 export function withPermission(
   resource: string,
   action: Action,
@@ -96,84 +106,52 @@ export function withPermission(
 ) {
   return async (req: NextRequest, ctx?: any): Promise<Response> => {
     try {
-      let token: string | undefined;
-
-      const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
-      if (authHeader && authHeader.startsWith("Bearer ")) {
-        token = authHeader.substring(7).trim();
-      }
-
+      const token = extractToken(req);
       if (!token) {
-        if (req.cookies && typeof req.cookies.get === "function") {
-          token = req.cookies.get("accessToken")?.value || req.cookies.get("token")?.value;
-        }
-      }
-
-      if (!token) {
-        const cookieHeader = req.headers.get("cookie") || "";
-        const cookies = cookieHeader.split(";").map((c) => c.trim());
-        const tokenCookie = cookies.find((c) => c.startsWith("accessToken=") || c.startsWith("token="));
-        if (tokenCookie) {
-          token = tokenCookie.split("=")[1];
-        }
-      }
-
-      if (!token) {
-        return ApiResponse.error(401, false, "Unauthorized: Token missing", null);
+        return ApiResponse.error(401, false, 'Unauthorized: Token missing', null);
       }
 
       let decoded: any;
       try {
-        decoded = TokenServices.verifyAccessToken(token);
+        decoded = verifyAccessToken(token);
       } catch {
-        return ApiResponse.error(401, false, "Unauthorized: Invalid or expired token", null);
+        return ApiResponse.error(401, false, 'Unauthorized: Invalid or expired token', null);
       }
 
       const userId = decoded?.userId || decoded?.id;
-      const tokenVersion = decoded?.tokenVersion;
-
       if (!userId) {
-        return ApiResponse.error(401, false, "Unauthorized: Invalid token payload", null);
+        return ApiResponse.error(401, false, 'Unauthorized: Invalid token payload', null);
       }
 
       await connectDB();
 
-      void Role;
-      void Permission;
-
-      // Fetch user from MongoDB with populated role & permissions
       const user = await User.findById(userId).populate({
-        path: "role",
-        populate: {
-          path: "permissions",
-        },
+        path: 'role',
+        populate: { path: 'permissions' },
       });
 
       if (!user) {
-        return ApiResponse.error(401, false, "Unauthorized: User not found or deactivated", null);
+        return ApiResponse.error(401, false, 'Unauthorized: User not found', null);
       }
 
-      // Check for unpopulated/missing role structure and resolve dynamically if needed
-      if (!user.role || typeof user.role === "string" || !(user.role as any).permissions) {
-        const roleDoc = await getRole(typeof user.role === "string" ? user.role : "employee");
+      if (decoded.tokenVersion !== undefined && user.tokenVersion !== undefined && user.tokenVersion !== decoded.tokenVersion) {
+        return ApiResponse.error(401, false, 'Unauthorized: Session revoked', null);
+      }
+
+      if (!user.role || typeof user.role === 'string' || !(user.role as any).permissions) {
+        const roleDoc = await getRole(typeof user.role === 'string' ? user.role : 'employee');
         if (roleDoc) {
           user.role = roleDoc;
         }
       }
 
-      // Invalidate session if token version has changed
-      if (tokenVersion !== undefined && user.tokenVersion !== undefined && user.tokenVersion !== tokenVersion) {
-        return ApiResponse.error(401, false, "Unauthorized: Token version mismatch / session revoked", null);
-      }
-
-      // Authorize against current database permissions
       if (!hasPermission(user, resource, action)) {
         return ApiResponse.error(403, false, `Forbidden: Insufficient permissions for ${resource}:${action}`, null);
       }
 
       return await handler(req, ctx, user);
     } catch (error: any) {
-      return ApiResponse.error(500, false, "Internal Server Error", error.message);
+      return ApiResponse.error(500, false, 'Internal Server Error', error.message);
     }
   };
 }

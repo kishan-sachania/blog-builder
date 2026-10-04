@@ -1,5 +1,5 @@
 import React from 'react';
-import { postService } from '@/services/postService';
+import { blogService } from '@/services/blogService';
 import { categoryService } from '@/services/categoryService';
 import { getCurrentUser } from '@/lib/auth';
 import { Navbar } from '@/components/common/Navbar';
@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
   const user = await getCurrentUser();
-  const allPosts = await postService.getAllPosts({ status: 'published' });
+  const allPosts = await blogService.getAllPosts({ status: 'published' });
   const categories = await categoryService.getAllCategories();
 
   const featuredPost = allPosts.find(p => p.featured);

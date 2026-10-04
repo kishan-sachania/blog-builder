@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { getPaginatedData, useApi } from '@/hooks/useApi';
+import { usePaginatedData, useApi } from '@/hooks/useApi';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Avatar } from '@/components/common/Avatar';
 import {
@@ -23,8 +23,136 @@ import {
   Mail,
   User as UserIcon,
 } from 'lucide-react';
-import { GenericForm, FormFieldConfig } from '@/components/common/Form';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { createUserSchema, CreateUserFormData } from '@/lib/validations';
+import { getRoleName, isAdminRole } from '@/lib/roles';
+
+const CreateUserForm: React.FC<{
+  onSubmit: (data: CreateUserFormData) => Promise<void>;
+  onCancel: () => void;
+  isLoading: boolean;
+}> = ({ onSubmit, onCancel, isLoading }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreateUserFormData>({
+    resolver: zodResolver(createUserSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      role: 'employee',
+    },
+  });
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Name */}
+        <div className="space-y-1.5">
+          <label className="block text-xs font-semibold text-[#343131]">
+            Full Name <span className="text-rose-500">*</span>
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#96918B]">
+              <UserIcon className="w-4 h-4" />
+            </div>
+            <input
+              type="text"
+              placeholder="e.g. Sarah Jenkins"
+              {...register('name')}
+              className={`w-full pl-10 pr-3.5 py-2.5 text-xs bg-white border rounded-xl text-[#343131] placeholder-[#96918B] focus:outline-none focus:ring-2 focus:ring-[#FFB22C] transition-colors ${
+                errors.name ? 'border-rose-400 focus:border-rose-400 focus:ring-rose-200' : 'border-[#EAE6DF]'
+              }`}
+            />
+          </div>
+          {errors.name && <p className="text-[11px] text-rose-600">{errors.name.message}</p>}
+        </div>
+
+        {/* Email */}
+        <div className="space-y-1.5">
+          <label className="block text-xs font-semibold text-[#343131]">
+            Corporate Email <span className="text-rose-500">*</span>
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#96918B]">
+              <Mail className="w-4 h-4" />
+            </div>
+            <input
+              type="email"
+              placeholder="s.jenkins@company.com"
+              {...register('email')}
+              className={`w-full pl-10 pr-3.5 py-2.5 text-xs bg-white border rounded-xl text-[#343131] placeholder-[#96918B] focus:outline-none focus:ring-2 focus:ring-[#FFB22C] transition-colors ${
+                errors.email ? 'border-rose-400 focus:border-rose-400 focus:ring-rose-200' : 'border-[#EAE6DF]'
+              }`}
+            />
+          </div>
+          {errors.email && <p className="text-[11px] text-rose-600">{errors.email.message}</p>}
+        </div>
+
+        {/* Password */}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+            <label className="block text-xs font-semibold text-[#343131]">
+              Temporary Password <span className="text-rose-500">*</span>
+            </label>
+            <span className="text-[10px] text-[#96918B]">Min 6 chars</span>
+          </div>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#96918B]">
+              <Lock className="w-4 h-4" />
+            </div>
+            <input
+              type="password"
+              placeholder="Minimum 6 characters"
+              {...register('password')}
+              className={`w-full pl-10 pr-3.5 py-2.5 text-xs bg-white border rounded-xl text-[#343131] placeholder-[#96918B] focus:outline-none focus:ring-2 focus:ring-[#FFB22C] transition-colors ${
+                errors.password ? 'border-rose-400 focus:border-rose-400 focus:ring-rose-200' : 'border-[#EAE6DF]'
+              }`}
+            />
+          </div>
+          {errors.password && <p className="text-[11px] text-rose-600">{errors.password.message}</p>}
+        </div>
+
+        {/* Role */}
+        <div className="space-y-1.5">
+          <label className="block text-xs font-semibold text-[#343131]">
+            Access Role <span className="text-rose-500">*</span>
+          </label>
+          <select
+            {...register('role')}
+            className={`w-full px-3.5 py-2.5 text-xs bg-white border rounded-xl text-[#343131] focus:outline-none focus:ring-2 focus:ring-[#FFB22C] transition-colors ${
+              errors.role ? 'border-rose-400 focus:border-rose-400 focus:ring-rose-200' : 'border-[#EAE6DF]'
+            }`}
+          >
+            <option value="employee">Employee / Author (Standard privileges)</option>
+            <option value="admin">Administrator (Elevated governance & moderation)</option>
+          </select>
+          {errors.role && <p className="text-[11px] text-rose-600">{errors.role.message}</p>}
+        </div>
+      </div>
+
+      <div className="flex items-center justify-end space-x-3 pt-2">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="px-4 py-2.5 text-xs rounded-xl border border-[#EAE6DF] text-[#6B6661] hover:bg-[#FAF8F5] cursor-pointer font-medium"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-all shadow-xs disabled:opacity-50 cursor-pointer"
+        >
+          {isLoading ? 'Creating...' : 'Create Account'}
+        </button>
+      </div>
+    </form>
+  );
+};
 
 export const ManageUsers: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -60,7 +188,7 @@ export const ManageUsers: React.FC = () => {
     nextPage,
     prevPage,
     refetch,
-  } = getPaginatedData('/api/user', 10, {
+  } = usePaginatedData('/api/user', 10, {
     sortBy: 'createdAt',
     sortOrder: 'desc',
   });
@@ -296,65 +424,10 @@ export const ManageUsers: React.FC = () => {
             </button>
           </div>
 
-          <GenericForm<CreateUserFormData>
-            schema={createUserSchema}
-            gridCols={2}
-            fields={[
-              {
-                name: 'name',
-                label: 'Full Name',
-                type: 'text',
-                placeholder: 'e.g. Sarah Jenkins',
-                icon: UserIcon,
-                required: true,
-              },
-              {
-                name: 'email',
-                label: 'Corporate Email',
-                type: 'email',
-                placeholder: 's.jenkins@company.com',
-                icon: Mail,
-                required: true,
-              },
-              {
-                name: 'password',
-                label: 'Temporary Password',
-                type: 'password',
-                placeholder: 'Minimum 6 characters',
-                icon: Lock,
-                badge: 'Min 6 chars',
-                required: true,
-              },
-              {
-                name: 'role',
-                label: 'Access Role',
-                type: 'select',
-                options: [
-                  { label: 'Employee / Author (Standard privileges)', value: 'employee' },
-                  { label: 'Administrator (Elevated governance & moderation)', value: 'admin' },
-                ],
-                required: true,
-              },
-            ]}
-            defaultValues={{
-              name: '',
-              email: '',
-              password: '',
-              role: 'employee',
-            }}
+          <CreateUserForm
             onSubmit={handleCreateUser}
+            onCancel={() => setIsAddingUser(false)}
             isLoading={isMutating}
-            submitText="Create Account"
-            submitClassName="w-auto px-5 py-2.5 bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white"
-            secondaryAction={
-              <button
-                type="button"
-                onClick={() => setIsAddingUser(false)}
-                className="px-4 py-2.5 text-xs rounded-xl border border-[#EAE6DF] text-[#6B6661] hover:bg-[#FAF8F5] cursor-pointer font-medium"
-              >
-                Cancel
-              </button>
-            }
           />
         </div>
       )}
@@ -513,6 +586,7 @@ export const ManageUsers: React.FC = () => {
                 <tr className="bg-[#FAF8F5] border-b border-[#EAE6DF] text-[11px] font-bold uppercase tracking-wider text-[#6B6661]">
                   <th className="py-3 px-5">User</th>
                   <th className="py-3 px-4">Role & Access Level</th>
+                  <th className="py-3 px-4">Stories</th>
                   <th className="py-3 px-4">
                     <button
                       type="button"
@@ -534,8 +608,8 @@ export const ManageUsers: React.FC = () => {
               <tbody className="divide-y divide-[#EAE6DF] text-xs">
                 {users.map((u: any) => {
                   const userId = u._id || u.id;
-                  const roleName = u.roleName || (typeof u.role === 'object' ? u.role?.name : 'employee');
-                  const isAdmin = roleName.toLowerCase() === 'admin';
+                  const roleName = getRoleName(u);
+                  const isAdmin = isAdminRole(u);
 
                   return (
                     <tr key={userId} className="hover:bg-[#FAF8F5]/80 transition-colors">
@@ -576,6 +650,26 @@ export const ManageUsers: React.FC = () => {
                             <option value="employee">Switch to Employee</option>
                             <option value="admin">Promote to Admin</option>
                           </select>
+                        </div>
+                      </td>
+
+                      {/* Stories (Published & Drafts) */}
+                      <td className="py-3.5 px-4">
+                        <div className="flex items-center space-x-2">
+                          <span
+                            className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-800 border border-emerald-200"
+                            title="Published Articles"
+                          >
+                            <span className="font-bold">{u.publishedCount ?? 0}</span>
+                            <span className="text-[10px] text-emerald-700">pub</span>
+                          </span>
+                          <span
+                            className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-purple-50 text-purple-800 border border-purple-200"
+                            title="Draft Articles"
+                          >
+                            <span className="font-bold">{u.draftCount ?? 0}</span>
+                            <span className="text-[10px] text-purple-700">draft</span>
+                          </span>
                         </div>
                       </td>
 

@@ -2,11 +2,11 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { categoryService } from '@/services/categoryService';
-import { postService } from '@/services/postService';
+import { blogService } from '@/services/blogService';
 import { getCurrentUser } from '@/lib/auth';
 import { Navbar } from '@/components/common/Navbar';
 import { Footer } from '@/components/common/Footer';
-import { LatestStories } from '@/components/home/LatestStories';
+import { RecentStoriesGrid } from '@/components/home/RecentStoriesGrid';
 import { Compass } from 'lucide-react';
 
 interface PageProps {
@@ -34,7 +34,7 @@ export default async function TopicSlugPage({ params }: PageProps) {
     notFound();
   }
 
-  const posts = await postService.getAllPosts({ categoryId: category.id, status: 'published' });
+  const posts = await blogService.getAllPosts({ categoryId: category.id, status: 'published' });
   const allCategories = await categoryService.getAllCategories();
 
   return (
@@ -67,7 +67,7 @@ export default async function TopicSlugPage({ params }: PageProps) {
           </div>
         </section>
 
-        <LatestStories posts={posts} categories={allCategories} />
+        <RecentStoriesGrid posts={posts} categories={allCategories} />
       </main>
       <Footer />
     </div>

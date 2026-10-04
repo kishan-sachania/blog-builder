@@ -4,23 +4,14 @@ import Image from 'next/image';
 import { Post } from '@/types';
 import { Avatar } from '@/components/common/Avatar';
 import { Calendar, ArrowRight } from 'lucide-react';
+import { formatDate } from '@/lib/util';
 
 interface FeaturedStoryProps {
   post: Post;
 }
 
 export const FeaturedStory: React.FC<FeaturedStoryProps> = ({ post }) => {
-  const formattedDate = post.publishedAt
-    ? new Date(post.publishedAt).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    })
-    : new Date(post.createdAt).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
+  const formattedDate = formatDate(post.publishedAt || post.createdAt);
 
   return (
     <section className="py-12 border-b border-[#EAE6DF]">

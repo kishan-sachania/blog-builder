@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { getPaginatedData, useApi } from '@/hooks/useApi';
+import { usePaginatedData, useApi } from '@/hooks/useApi';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Badge } from '@/components/common/Badge';
+import { formatDate } from '@/lib/util';
 import {
   Edit3,
   Trash2,
@@ -51,7 +52,7 @@ export const AdminBlogList: React.FC<AdminBlogListProps> = ({ initialStatus = 'a
     nextPage,
     prevPage,
     refetch,
-  } = getPaginatedData('/api/blog', 10);
+  } = usePaginatedData('/api/blog', 10);
 
   const handleStatusChange = (status: string) => {
     setActiveStatus(status);
@@ -240,11 +241,7 @@ export const AdminBlogList: React.FC<AdminBlogListProps> = ({ initialStatus = 'a
                 const authorName = blog.author?.name || 'Staff Writer';
                 const authorEmail = blog.author?.email || '';
                 const categoryName = blog.category?.name || 'General';
-                const formattedDate = new Date(blog.createdAt || Date.now()).toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
-                });
+                const formattedDate = formatDate(blog.createdAt);
 
                 return (
                   <tr key={blogId} className="hover:bg-[#FAF8F5]/80 transition-colors">

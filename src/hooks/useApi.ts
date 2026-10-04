@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { apiClient } from '@/lib/axios';
 import { usePagination } from './usePagination';
 
@@ -89,49 +89,19 @@ export function usePaginatedData<T = any>(
         setData(resData?.items || resData?.blogs || resData?.posts || resData?.users || []);
         setTotal(resData?.total || 0);
       }
+      return resData;
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'Failed to fetch data');
+      const msg = err.response?.data?.message || err.message || 'Failed to fetch data';
+      setError(msg);
+      throw err;
     } finally {
       setLoading(false);
     }
   }, [url, page, limit, filterString, setTotal]);
 
   useEffect(() => {
-    let ignore = false;
-    async function loadData() {
-      setLoading(true);
-      setError(null);
-      try {
-        const parsedFilters = filterString ? JSON.parse(filterString) : {};
-        const res = await apiClient.get(url, {
-          params: { page, limit, ...parsedFilters },
-        });
-        const resData = res.data?.data !== undefined ? res.data.data : res.data;
-        if (!ignore) {
-          if (Array.isArray(resData)) {
-            setData(resData);
-            setTotal(resData.length);
-          } else {
-            setData(resData?.items || resData?.blogs || resData?.posts || resData?.users || []);
-            setTotal(resData?.total || 0);
-          }
-        }
-      } catch (err: any) {
-        if (!ignore) {
-          setError(err.response?.data?.message || err.message || 'Failed to fetch data');
-        }
-      } finally {
-        if (!ignore) {
-          setLoading(false);
-        }
-      }
-    }
-
-    loadData();
-    return () => {
-      ignore = true;
-    };
-  }, [url, page, limit, filterString, setTotal]);
+    fetchData().catch(() => {});
+  }, [fetchData]);
 
   return {
     data,
@@ -143,5 +113,3 @@ export function usePaginatedData<T = any>(
     refetch: fetchData,
   };
 }
-
-export const getPaginatedData = usePaginatedData;

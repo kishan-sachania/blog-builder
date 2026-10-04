@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
-import { notFound } from 'next/navigation';
-import { postService } from '@/services/postService';
+import { notFound, redirect } from 'next/navigation';
+import { blogService } from '@/services/blogService';
 import { categoryService } from '@/services/categoryService';
 import { getCurrentUser } from '@/lib/auth';
 import { StudioSidebar } from '@/components/studio/StudioSidebar';
@@ -17,8 +17,6 @@ export const metadata = {
 
 export const dynamic = 'force-dynamic';
 
-import { redirect } from 'next/navigation';
-
 export default async function EditStoryPage({ params }: PageProps) {
   const { id } = await params;
   const user = await getCurrentUser();
@@ -26,13 +24,13 @@ export default async function EditStoryPage({ params }: PageProps) {
     redirect('/auth/login');
   }
 
-  const post = await postService.getPostById(id);
+  const post = await blogService.getPostById(id);
   if (!post) {
     notFound();
   }
 
   const categories = await categoryService.getAllCategories();
-  const authorPosts = await postService.getAllPosts({ authorId: user.id });
+  const authorPosts = await blogService.getAllPosts({ authorId: user.id });
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] flex">

@@ -79,7 +79,7 @@ export const ArticleEditor: React.FC<ArticleEditorProps> = ({
   const [title, setTitle] = useState(initialPost?.title || '');
   const [content, setContent] = useState(initialPost?.content || '');
   const [categoryId, setCategoryId] = useState(
-    initialPost?.category?._id || initialPost?.category || initialPost?.categoryId || categoryList[0]?.id || categoryList[0]?._id || ''
+    initialPost?.categoryId || (typeof initialPost?.category === 'object' ? initialPost.category?._id : initialPost?.category) || categoryList[0]?.id || categoryList[0]?._id || ''
   );
   const [coverImage, setCoverImage] = useState(initialPost?.coverImage || '');
   const [tags, setTags] = useState<string[]>(initialPost?.tags || ['Engineering', 'Tech']);

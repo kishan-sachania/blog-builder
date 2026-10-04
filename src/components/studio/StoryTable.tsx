@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/common/Badge';
+import { formatDate } from '@/lib/util';
 import {
   Edit3,
   Trash2,
@@ -120,11 +121,7 @@ export const StoryTable: React.FC<StoryTableProps> = ({
             </thead>
             <tbody className="divide-y divide-[#EAE6DF]">
               {stories.map(story => {
-                const formattedDate = new Date(story.updatedAt).toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric'
-                });
+                const formattedDate = formatDate(story.updatedAt);
 
                 const isPublished = story.status === 'published';
 

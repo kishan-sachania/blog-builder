@@ -61,8 +61,8 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
   const handleStartEditCategory = (cat: Category) => {
     setEditingCategory(cat);
     setCatName(cat.name);
-    setCatDescription(cat.description);
-    setCatColor(cat.color);
+    setCatDescription(cat.description || '');
+    setCatColor(cat.color || '#FF8F00');
     setIsAddingCategory(true);
   };
 

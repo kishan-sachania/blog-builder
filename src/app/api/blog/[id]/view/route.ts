@@ -1,6 +1,6 @@
 import { ApiResponse } from "@/lib/api-response";
 import { connectDB } from "@/lib/db";
-import { incrementBlogViews } from "@/services/blogServices";
+import { incrementBlogViews } from "@/services/blogService";
 import { NextRequest } from "next/server";
 
 interface RouteParams {

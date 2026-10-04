@@ -1,19 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
-import { PenSquare, Sparkles, ArrowRight, ChevronDown, BookOpen } from 'lucide-react';
+import { PenSquare, Sparkles, ArrowRight, BookOpen } from 'lucide-react';
 
 export const HeroSection: React.FC = () => {
   return (
     <section className="relative min-h-[calc(100vh-5rem)] min-h-[calc(100dvh-5rem)] flex flex-col justify-between border-b border-[#EAE6DF] bg-gradient-to-b from-[#FAF8F5] via-[#FAF6F0] to-[#F5EFE6] overflow-hidden">
-      {/* Ambient background glow accents */}
-      <div
-        className="absolute top-1/4 right-5 sm:right-20 w-72 sm:w-96 h-72 sm:h-96 bg-[#FFB22C]/10 rounded-full blur-3xl pointer-events-none -z-0"
-        aria-hidden="true"
-      />
-      <div
-        className="absolute bottom-12 left-5 sm:left-16 w-64 sm:w-80 h-64 sm:h-80 bg-[#FF8F00]/5 rounded-full blur-3xl pointer-events-none -z-0"
-        aria-hidden="true"
-      />
 
       {/* Main Hero Body - Centered Vertically */}
       <div className="flex-1 flex items-center relative z-10 py-12 sm:py-16 lg:py-20">

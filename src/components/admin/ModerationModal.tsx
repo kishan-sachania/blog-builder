@@ -14,6 +14,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { useApi } from '@/hooks/useApi';
+import { formatDate } from '@/lib/util';
 
 interface ModerationModalProps {
   post: any | null;
@@ -38,7 +39,13 @@ export const ModerationModal: React.FC<ModerationModalProps> = ({
     setError(null);
 
     const postId = post._id || post.id;
-    const newStatus = action === 'approved' ? 'published' : 'draft';
+    const statusMap: Record<string, string> = {
+      approved: 'published',
+      rejected: 'rejected',
+      archived: 'archived',
+      changes_requested: 'draft',
+    };
+    const newStatus = statusMap[action] || 'draft';
 
     try {
       await put(`/api/blog/${postId}`, {
@@ -53,17 +60,7 @@ export const ModerationModal: React.FC<ModerationModalProps> = ({
     }
   };
 
-  const formattedDate = post.submittedAt
-    ? new Date(post.submittedAt).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    })
-    : new Date(post.createdAt).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
+  const formattedDate = formatDate(post.submittedAt || post.createdAt);
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-150">

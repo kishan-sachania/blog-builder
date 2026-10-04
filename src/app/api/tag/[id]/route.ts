@@ -7,7 +7,7 @@ interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
-export const GET = withPermission("category", "read", async (_req: NextRequest, { params }: RouteParams) => {
+export const GET = withPermission("tag", "read", async (_req: NextRequest, { params }: RouteParams) => {
   try {
     const { id } = await params;
     const tag = await tagService.getTagById(id);
@@ -20,7 +20,7 @@ export const GET = withPermission("category", "read", async (_req: NextRequest, 
   }
 });
 
-export const PUT = withPermission("category", "update", async (req: NextRequest, { params }: RouteParams) => {
+export const PUT = withPermission("tag", "update", async (req: NextRequest, { params }: RouteParams) => {
   try {
     const { id } = await params;
     const body = await req.json();
@@ -34,7 +34,7 @@ export const PUT = withPermission("category", "update", async (req: NextRequest,
   }
 });
 
-export const DELETE = withPermission("category", "delete", async (_req: NextRequest, { params }: RouteParams) => {
+export const DELETE = withPermission("tag", "delete", async (_req: NextRequest, { params }: RouteParams) => {
   try {
     const { id } = await params;
     await tagService.deleteTag(id);

@@ -2,14 +2,13 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { authorService } from '@/services/authorService';
-import { postService } from '@/services/postService';
+import { userService } from '@/services/userService';
+import { blogService } from '@/services/blogService';
 import { getCurrentUser } from '@/lib/auth';
 import { Navbar } from '@/components/common/Navbar';
 import { Footer } from '@/components/common/Footer';
 import { Avatar } from '@/components/common/Avatar';
 import { BookOpen, Edit3 } from 'lucide-react';
-
 import { Metadata } from 'next';
 
 interface PageProps {
@@ -18,7 +17,7 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
-  const author = await authorService.getAuthorById(id);
+  const author = await userService.getAuthorById(id);
   if (!author) return { title: 'Author Not Found - Blog Builder' };
   return {
     title: `${author.name} - Blog Builder Author Profile`,
@@ -31,13 +30,13 @@ export const dynamic = 'force-dynamic';
 export default async function AuthorProfilePage({ params }: PageProps) {
   const { id } = await params;
   const currentUser = await getCurrentUser();
-  const author = await authorService.getAuthorById(id);
+  const author = await userService.getAuthorById(id);
 
   if (!author) {
     notFound();
   }
 
-  const posts = await postService.getAllPosts({ authorId: id, status: 'published' });
+  const posts = await blogService.getAllPosts({ authorId: id, status: 'published' });
   const totalReads = posts.reduce((sum, p) => sum + (p.viewCount || 0), 0);
   const isOwnProfile = currentUser?.id === author.id;
 

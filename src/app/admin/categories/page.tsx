@@ -1,11 +1,10 @@
 import React, { Suspense } from 'react';
 import { categoryService } from '@/services/categoryService';
 import { tagService } from '@/services/tagService';
-import { postService } from '@/services/postService';
+import { blogService } from '@/services/blogService';
 import { getCurrentUser } from '@/lib/auth';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { CategoryManager } from '@/components/admin/CategoryManager';
-
 import { redirect } from 'next/navigation';
 
 export const metadata = {
@@ -24,7 +23,7 @@ export default async function AdminCategoriesPage() {
   const [categories, tags, pendingPosts] = await Promise.all([
     categoryService.getAllCategories(),
     tagService.getAllTags(),
-    postService.getAllPosts({ status: 'in_review' }),
+    blogService.getAllPosts({ status: 'in_review' }),
   ]);
 
   return (

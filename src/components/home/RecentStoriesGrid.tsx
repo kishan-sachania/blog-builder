@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Post, Category } from '@/types';
 import { Avatar } from '@/components/common/Avatar';
 import { Calendar, Eye, Search, ArrowRight, Sparkles, Tag, PenSquare } from 'lucide-react';
+import { formatDate } from '@/lib/util';
 
 interface RecentStoriesGridProps {
   posts: Post[];
@@ -166,17 +167,7 @@ export const RecentStoriesGrid: React.FC<RecentStoriesGridProps> = ({ posts, cat
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-2">
             {sortedPosts.map(post => {
-              const formattedDate = post.publishedAt
-                ? new Date(post.publishedAt).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })
-                : new Date(post.createdAt).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  });
+              const formattedDate = formatDate(post.publishedAt || post.createdAt);
 
               return (
                 <article

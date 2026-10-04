@@ -3,7 +3,7 @@ import { ApiResponse } from "@/lib/api-response";
 import { tagService } from "@/services/tagService";
 import { withPermission } from "@/lib/rbac";
 
-export const GET = withPermission("category", "read", async () => {
+export const GET = withPermission("tag", "read", async () => {
   try {
     const tags = await tagService.getAllTags();
     return ApiResponse.success(200, true, "Tags fetched successfully", tags);
@@ -12,7 +12,7 @@ export const GET = withPermission("category", "read", async () => {
   }
 });
 
-export const POST = withPermission("category", "create", async (req: NextRequest) => {
+export const POST = withPermission("tag", "create", async (req: NextRequest) => {
   try {
     const body = await req.json();
     if (!body?.name?.trim()) {

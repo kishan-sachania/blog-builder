@@ -13,7 +13,7 @@ export const loginSchema = z.object({
     .string()
     .min(1, 'Please enter your password')
     .min(6, 'Password must be at least 6 characters long'),
-  rememberMe: z.boolean().optional().default(true),
+  rememberMe: z.boolean().optional(),
 });
 
 export type LoginFormData = z.infer<typeof loginSchema>;
@@ -46,14 +46,12 @@ export const profileSchema = z.object({
   bio: z
     .string()
     .max(500, 'Biography cannot exceed 500 characters')
-    .optional()
-    .default(''),
+    .optional(),
   avatarUrl: z
     .string()
     .url('Please provide a valid image URL')
     .or(z.literal(''))
-    .optional()
-    .default(''),
+    .optional(),
 });
 
 export type ProfileFormData = z.infer<typeof profileSchema>;
@@ -87,8 +85,7 @@ export const categorySchema = z.object({
   description: z
     .string()
     .max(200, 'Description cannot exceed 200 characters')
-    .optional()
-    .default(''),
+    .optional(),
 });
 
 export type CategoryFormData = z.infer<typeof categorySchema>;

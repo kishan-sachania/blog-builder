@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Post } from '@/types';
 import { Avatar } from '@/components/common/Avatar';
 import { Calendar, Share2, Check, Bookmark, Eye } from 'lucide-react';
+import { formatDate } from '@/lib/util';
 
 interface ArticleHeaderProps {
   post: Post;
@@ -14,17 +15,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
   const [copied, setCopied] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
 
-  const formattedDate = post.publishedAt
-    ? new Date(post.publishedAt).toLocaleDateString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric'
-    })
-    : new Date(post.createdAt).toLocaleDateString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric'
-    });
+  const formattedDate = formatDate(post.publishedAt || post.createdAt);
 
   const handleShare = () => {
     if (typeof window !== 'undefined') {

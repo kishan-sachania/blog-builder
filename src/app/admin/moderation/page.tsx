@@ -1,10 +1,9 @@
 import React, { Suspense } from 'react';
-import { postService } from '@/services/postService';
+import { blogService } from '@/services/blogService';
 import { getCurrentUser } from '@/lib/auth';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { ModerationQueue } from '@/components/admin/ModerationQueue';
 import { Clock } from 'lucide-react';
-
 import { redirect } from 'next/navigation';
 
 export const metadata = {
@@ -20,7 +19,7 @@ export default async function AdminModerationPage() {
     redirect(user ? '/studio' : '/auth/login');
   }
 
-  const pendingPosts = await postService.getAllPosts({ status: 'in_review' });
+  const pendingPosts = await blogService.getAllPosts({ status: 'in_review' });
 
   return (
     <div className="h-screen bg-[#FAF8F5] flex overflow-hidden">

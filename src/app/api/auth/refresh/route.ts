@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { ApiResponse } from '@/lib/api-response';
-import { TokenServices } from '@/services/tokenServices';
+import { tokenService } from '@/services/tokenService';
 import { setAuthCookies, clearAuthCookies } from '@/lib/cookies';
 
 export const POST = async (req: NextRequest) => {
@@ -33,7 +33,7 @@ export const POST = async (req: NextRequest) => {
     // 4. Try reading from Authorization header if passed as Bearer
     if (!refreshToken) {
       const authHeader = req.headers.get('authorization') || req.headers.get('Authorization');
-      if (authHeader && authHeader.startsWith('Bearer ')) {
+      if (authHeader?.startsWith('Bearer ')) {
         refreshToken = authHeader.substring(7).trim();
       }
     }
@@ -45,10 +45,10 @@ export const POST = async (req: NextRequest) => {
     }
 
     // Verify refresh token and generate fresh pair
-    const tokens = await TokenServices.refreshToken(refreshToken);
+    const tokens = await tokenService.refreshToken(refreshToken);
     const response = ApiResponse.success(200, true, 'Tokens refreshed successfully', tokens);
 
-    // Update server-side httpOnly cookies with refreshed access and refresh tokens
+    // Update server-side httpOnly cookies
     setAuthCookies(response, tokens.accessToken, tokens.refreshToken);
 
     return response;

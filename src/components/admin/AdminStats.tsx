@@ -1,14 +1,14 @@
 'use client';
 
 import React from 'react';
-import { BookOpen, CheckCircle2, Users, Eye, FileEdit } from 'lucide-react';
+import { BookOpen, CheckCircle2, Users, FileEdit } from 'lucide-react';
 
 interface AdminStatsProps {
   totalStories: number;
   publishedStories: number;
   pendingReviews?: number;
   activeAuthors: number;
-  totalViews: number;
+  totalViews?: number;
   draftsCount: number;
   mostActiveEmployee?: any;
 }
@@ -17,7 +17,6 @@ export const AdminStats: React.FC<AdminStatsProps> = ({
   totalStories,
   publishedStories,
   activeAuthors,
-  totalViews,
   draftsCount,
 }) => {
   const cards = [
@@ -36,14 +35,6 @@ export const AdminStats: React.FC<AdminStatsProps> = ({
       color: 'bg-blue-600 text-white',
       borderColor: 'border-[#EAE6DF] bg-white',
       description: 'Employee contributors'
-    },
-    {
-      label: 'Total Readership',
-      value: totalViews,
-      icon: Eye,
-      color: 'bg-[#FF8F00] text-white',
-      borderColor: 'border-[#EAE6DF] bg-white',
-      description: 'Cumulative page views'
     },
     {
       label: 'Total Archive',
@@ -66,7 +57,7 @@ export const AdminStats: React.FC<AdminStatsProps> = ({
   return (
     <div className="space-y-4">
       {/* Metric Cards Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {cards.map(card => {
           const Icon = card.icon;
           return (

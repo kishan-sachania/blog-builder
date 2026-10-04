@@ -1,10 +1,9 @@
 import React, { Suspense } from 'react';
-import { postService } from '@/services/postService';
+import { redirect } from 'next/navigation';
+import { blogService } from '@/services/blogService';
 import { getCurrentUser } from '@/lib/auth';
 import { StudioSidebar } from '@/components/studio/StudioSidebar';
 import { ProfileEditor } from '@/components/studio/ProfileEditor';
-
-import { redirect } from 'next/navigation';
 
 export const metadata = {
   title: 'Author Profile Settings - Blog Builder Studio',
@@ -19,7 +18,7 @@ export default async function StudioProfilePage() {
     redirect('/auth/login');
   }
 
-  const authorPosts = await postService.getAllPosts({ authorId: user.id });
+  const authorPosts = await blogService.getAllPosts({ authorId: user.id });
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] flex">
@@ -33,7 +32,7 @@ export default async function StudioProfilePage() {
             Author Profile Settings
           </h1>
           <p className="text-xs sm:text-sm text-[#6B6661] mt-0.5">
-            Your name appear alongside your published essays across the journal.
+            Your name appears alongside your published essays across the journal.
           </p>
         </div>
 

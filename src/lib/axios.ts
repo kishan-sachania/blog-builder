@@ -2,7 +2,7 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
 export const apiClient = axios.create({
   baseURL: '',
-  withCredentials: true, 
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -11,7 +11,7 @@ export const apiClient = axios.create({
 let refreshPromise: Promise<unknown> | null = null;
 
 const redirectToLogin = () => {
-  if (!window.location.pathname.startsWith('/auth/')) {
+  if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/auth/')) {
     window.location.href = '/auth/login';
   }
 };
@@ -30,7 +30,9 @@ apiClient.interceptors.response.use(
 
     refreshPromise ??= axios
       .post('/api/auth/refresh', {}, { withCredentials: true })
-      .finally(() => { refreshPromise = null; });
+      .finally(() => {
+        refreshPromise = null;
+      });
 
     try {
       await refreshPromise;

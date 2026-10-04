@@ -1,11 +1,10 @@
 import React, { Suspense } from 'react';
+import { redirect } from 'next/navigation';
 import { categoryService } from '@/services/categoryService';
-import { postService } from '@/services/postService';
+import { blogService } from '@/services/blogService';
 import { getCurrentUser } from '@/lib/auth';
 import { StudioSidebar } from '@/components/studio/StudioSidebar';
 import { ArticleEditor } from '@/components/studio/ArticleEditor';
-
-import { redirect } from 'next/navigation';
 
 export const metadata = {
   title: 'Write a New Story - Blog Builder Studio',
@@ -21,7 +20,7 @@ export default async function NewStoryPage() {
   }
 
   const categories = await categoryService.getAllCategories();
-  const authorPosts = await postService.getAllPosts({ authorId: user.id });
+  const authorPosts = await blogService.getAllPosts({ authorId: user.id });
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] flex">

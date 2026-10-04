@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { categoryService } from '@/services/categoryService';
-import { postService } from '@/services/postService';
+import { blogService } from '@/services/blogService';
 import { getCurrentUser } from '@/lib/auth';
 import { Navbar } from '@/components/common/Navbar';
 import { Footer } from '@/components/common/Footer';
@@ -17,7 +17,7 @@ export const dynamic = 'force-dynamic';
 export default async function TopicsIndexPage() {
   const user = await getCurrentUser();
   const categories = await categoryService.getAllCategories();
-  const allPosts = await postService.getAllPosts({ status: 'published' });
+  const allPosts = await blogService.getAllPosts({ status: 'published' });
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF8F5]">
