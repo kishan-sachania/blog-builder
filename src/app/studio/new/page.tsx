@@ -8,7 +8,7 @@ import { ArticleEditor } from '@/components/studio/ArticleEditor';
 import { redirect } from 'next/navigation';
 
 export const metadata = {
-  title: 'Write a New Story — Blog Builder Studio',
+  title: 'Write a New Story - Blog Builder Studio',
   description: 'Draft, format, and publish a new essay.',
 };
 

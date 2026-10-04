@@ -7,7 +7,7 @@ import { ProfileEditor } from '@/components/studio/ProfileEditor';
 import { redirect } from 'next/navigation';
 
 export const metadata = {
-  title: 'Author Profile Settings — Blog Builder Studio',
+  title: 'Author Profile Settings - Blog Builder Studio',
   description: 'Manage your public author bio, avatar, and publication credentials.',
 };
 

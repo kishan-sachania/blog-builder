@@ -8,7 +8,7 @@ import { AuthorManager } from '@/components/admin/AuthorManager';
 import { redirect } from 'next/navigation';
 
 export const metadata = {
-  title: 'Authors & Permissions — Blog Builder Admin',
+  title: 'Authors & Permissions - Blog Builder Admin',
   description: 'Manage staff author directory and delegate editorial admin rights.',
 };
 

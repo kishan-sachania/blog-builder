@@ -9,7 +9,7 @@ import { CategoryManager } from '@/components/admin/CategoryManager';
 import { redirect } from 'next/navigation';
 
 export const metadata = {
-  title: 'Categories & Channels — Blog Builder Admin',
+  title: 'Categories & Channels - Blog Builder Admin',
   description: 'Manage categories, descriptions, and channel tags.',
 };
 

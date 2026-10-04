@@ -10,8 +10,20 @@ import { Footer } from '@/components/common/Footer';
 import { Avatar } from '@/components/common/Avatar';
 import { BookOpen, Edit3 } from 'lucide-react';
 
+import { Metadata } from 'next';
+
 interface PageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const author = await authorService.getAuthorById(id);
+  if (!author) return { title: 'Author Not Found - Blog Builder' };
+  return {
+    title: `${author.name} - Blog Builder Author Profile`,
+    description: author.bio || `Read essays and stories by ${author.name} on Blog Builder.`,
+  };
 }
 
 export const dynamic = 'force-dynamic';

@@ -6,7 +6,7 @@ import { ManageUsers } from '@/components/admin/ManageUsers';
 import { redirect } from 'next/navigation';
 
 export const metadata = {
-  title: 'Manage Users & Authors — Blog Builder Admin',
+  title: 'Manage Users & Authors - Blog Builder Admin',
   description: 'Manage users, roles, registration dates, and permissions across the platform.',
 };
 

@@ -20,10 +20,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const post = await postService.getPostBySlug(slug) || await postService.getPostById(slug);
   if (!post) {
-    return { title: 'Story Not Found — Blog Builder' };
+    return { title: 'Story Not Found - Blog Builder' };
   }
   return {
-    title: `${post.title} — Blog Builder`,
+    title: `${post.title} - Blog Builder`,
     description: post.excerpt,
     openGraph: {
       title: post.title,

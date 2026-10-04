@@ -11,7 +11,7 @@ interface PageProps {
 }
 
 export const metadata = {
-  title: 'All Stories Index — Blog Builder Admin',
+  title: 'All Stories Index - Blog Builder Admin',
   description: 'Manage every employee submission, draft, and published essay across the company.',
 };
 

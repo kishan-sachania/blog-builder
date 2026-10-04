@@ -8,7 +8,7 @@ import { Footer } from '@/components/common/Footer';
 import { ArrowRight, Compass } from 'lucide-react';
 
 export const metadata = {
-  title: 'Topics & Editorial Archives — Blog Builder',
+  title: 'Topics & Editorial Archives - Blog Builder',
   description: 'Explore publication archives by discipline, craft, engineering systems, and workplace culture.',
 };
 

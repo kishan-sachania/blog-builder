@@ -4,7 +4,7 @@ import { RegisterForm } from '@/components/auth/RegisterForm';
 import { ArrowLeft, Feather } from 'lucide-react';
 
 export const metadata = {
-  title: 'Join Blog Builder — Register Author Account',
+  title: 'Join Blog Builder - Register Author Account',
   description: 'Register as an employee contributor to author essays and participate in editorial discussions.',
 };
 

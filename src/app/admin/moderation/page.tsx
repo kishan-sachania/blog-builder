@@ -8,7 +8,7 @@ import { Clock } from 'lucide-react';
 import { redirect } from 'next/navigation';
 
 export const metadata = {
-  title: 'Editorial Review Queue — Blog Builder Admin',
+  title: 'Editorial Review Queue - Blog Builder Admin',
   description: 'Review pending submissions, provide feedback, approve, and manage article publishing.',
 };
 

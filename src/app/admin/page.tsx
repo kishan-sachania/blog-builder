@@ -10,7 +10,7 @@ import { AdminBlogList } from '@/components/admin/AdminBlogList';
 import { redirect } from 'next/navigation';
 
 export const metadata = {
-  title: 'Editorial Administration — Blog Builder',
+  title: 'Editorial Administration - Blog Builder',
   description: 'Manage platform analytics, users, and published company stories.',
 };
 

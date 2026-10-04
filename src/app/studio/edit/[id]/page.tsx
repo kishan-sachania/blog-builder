@@ -11,7 +11,7 @@ interface PageProps {
 }
 
 export const metadata = {
-  title: 'Edit Story — Blog Builder Studio',
+  title: 'Edit Story - Blog Builder Studio',
   description: 'Modify drafts or update your published essays.',
 };
 

@@ -14,8 +14,16 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Blog Builder — Internal Editorial Platform",
+  title: "Blog Builder - Internal Editorial Platform",
   description: "An intentional editorial platform for company insights, engineering architecture, design craft, and cultural reflections.",
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico' },
+    ],
+    shortcut: '/icon.svg',
+    apple: '/icon.svg',
+  },
 };
 
 export default function RootLayout({

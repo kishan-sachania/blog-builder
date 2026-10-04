@@ -9,7 +9,7 @@ import { PenSquare, Shield } from 'lucide-react';
 import { redirect } from 'next/navigation';
 
 export const metadata = {
-  title: 'All My Stories — Blog Builder Studio',
+  title: 'All My Stories - Blog Builder Studio',
   description: 'Manage and browse all your authored stories and drafts.',
 };
 
