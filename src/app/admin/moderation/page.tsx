@@ -22,12 +22,12 @@ export default async function AdminModerationPage() {
   const pendingPosts = await blogService.getAllPosts({ status: 'in_review' });
 
   return (
-    <div className="h-screen bg-[#FAF8F5] flex overflow-hidden">
-      <Suspense fallback={<div className="w-64 bg-[#232020] h-screen shrink-0" />}>
+    <div className="min-h-screen md:h-screen md:overflow-hidden bg-[#FAF8F5] flex flex-col md:flex-row">
+      <Suspense fallback={<div className="hidden md:block w-64 bg-[#232020] h-screen shrink-0" />}>
         <AdminSidebar user={user} pendingReviewsCount={pendingPosts.length} />
       </Suspense>
 
-      <main className="flex-1 h-screen overflow-y-auto p-6 sm:p-8 lg:p-10 max-w-7xl space-y-6">
+      <main className="flex-1 md:h-screen md:overflow-y-auto p-4 sm:p-6 lg:p-8 max-w-7xl w-full space-y-6">
         <div>
           <div className="flex items-center space-x-2 text-xs uppercase font-bold tracking-wider text-[#FF8F00] mb-1">
             <Clock className="w-3.5 h-3.5" />

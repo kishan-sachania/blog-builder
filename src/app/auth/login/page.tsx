@@ -11,8 +11,8 @@ export const metadata = {
 export default function LoginPage() {
   return (
     <div className="min-h-screen w-full grid grid-cols-1 lg:grid-cols-12 bg-[#FAF8F5]">
-      {/* Left editorial brand panel */}
-      <section className="lg:col-span-7 relative bg-gradient-to-br from-[#F5EFE6] via-[#FAF8F5] to-[#F1ECE1] p-8 sm:p-12 lg:p-16 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-[#EAE6DF] overflow-hidden">
+      {/* Left editorial brand panel - hidden on tablet and mobile */}
+      <section className="hidden lg:flex lg:col-span-7 relative bg-gradient-to-br from-[#F5EFE6] via-[#FAF8F5] to-[#F1ECE1] p-8 sm:p-12 lg:p-16 flex-col justify-between border-r border-[#EAE6DF] overflow-hidden">
         <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-[#FFB22C]/10 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-[#FF8F00]/10 blur-3xl pointer-events-none" />
 
@@ -34,15 +34,15 @@ export default function LoginPage() {
 
           <Link
             href="/"
-            className="hidden sm:inline-flex items-center space-x-2 text-xs font-semibold text-[#6B6661] hover:text-[#343131] bg-white/70 hover:bg-white px-3.5 py-1.5 rounded-full border border-[#EAE6DF] transition-colors"
+            className="inline-flex items-center space-x-2 text-xs font-semibold text-[#6B6661] hover:text-[#343131] bg-white/70 hover:bg-white px-3.5 py-1.5 rounded-full border border-[#EAE6DF] transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Public Journal</span>
           </Link>
         </div>
 
-        {/* Simplified Editorial Message */}
-        <div className="relative z-10 max-w-xl my-12 lg:my-auto space-y-6">
+        {/* Editorial Message */}
+        <div className="relative z-10 max-w-xl my-auto space-y-6">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#FAF3E0] text-[#8C5D00] border border-[#FFB22C]/40">
             <Sparkles className="w-3.5 h-3.5 text-[#FF8F00]" />
             <span>Staff Writing Studio</span>
@@ -68,14 +68,28 @@ export default function LoginPage() {
       </section>
 
       {/* Right Login Form panel */}
-      <section className="lg:col-span-5 bg-[#FAF8F5] p-6 sm:p-10 lg:p-12 flex flex-col justify-between">
-        <div className="flex items-center justify-between sm:hidden mb-6">
+      <section className="col-span-1 lg:col-span-5 bg-[#FAF8F5] p-6 sm:p-10 lg:p-12 flex flex-col justify-between min-h-screen">
+        {/* Mobile & Tablet Top Bar (when left brand panel is hidden) */}
+        <div className="flex items-center justify-between lg:hidden mb-6 pb-4 border-b border-[#EAE6DF]">
+          <Link href="/" className="inline-flex items-center space-x-2.5">
+            <div className="w-8 h-8 rounded-full bg-[#FFB22C] flex items-center justify-center text-[#343131] shadow-xs">
+              <Feather className="w-4 h-4 text-[#343131]" />
+            </div>
+            <div>
+              <span className="font-serif text-lg font-bold text-[#343131] block leading-none">
+                Blog Builder
+              </span>
+              <span className="text-[9px] uppercase tracking-wider text-[#6B6661] font-medium block">
+                Editorial Portal
+              </span>
+            </div>
+          </Link>
           <Link
             href="/"
-            className="inline-flex items-center space-x-1.5 text-xs font-semibold text-[#6B6661]"
+            className="inline-flex items-center space-x-1.5 text-xs font-semibold text-[#6B6661] hover:text-[#343131] bg-white px-3 py-1.5 rounded-full border border-[#EAE6DF] transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Journal</span>
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Journal</span>
           </Link>
         </div>
 
@@ -85,7 +99,10 @@ export default function LoginPage() {
           </Suspense>
         </div>
 
-       
+        {/* Mobile & Tablet subtle footer */}
+        <div className="text-center pt-6 text-xs text-[#96918B] lg:hidden">
+          <p>© {new Date().getFullYear()} Blog Builder • Staff Sign In</p>
+        </div>
       </section>
     </div>
   );

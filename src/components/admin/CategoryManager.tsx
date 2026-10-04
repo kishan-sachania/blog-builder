@@ -179,12 +179,12 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
         </div>
 
         {/* Tab & Add Button */}
-        <div className="flex items-center space-x-3">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
           <div className="flex bg-[#FAF8F5] p-1 rounded-xl border border-[#EAE6DF]">
             <button
               type="button"
               onClick={() => { setActiveTab('categories'); resetCategoryForm(); resetTagForm(); }}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${activeTab === 'categories'
+              className={`px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${activeTab === 'categories'
                 ? 'bg-white text-[#343131] shadow-2xs font-bold'
                 : 'text-[#6B6661] hover:text-[#343131]'
                 }`}
@@ -195,7 +195,7 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
             <button
               type="button"
               onClick={() => { setActiveTab('tags'); resetCategoryForm(); resetTagForm(); }}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${activeTab === 'tags'
+              className={`px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${activeTab === 'tags'
                 ? 'bg-white text-[#343131] shadow-2xs font-bold'
                 : 'text-[#6B6661] hover:text-[#343131]'
                 }`}
@@ -209,7 +209,7 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
             <button
               type="button"
               onClick={() => { resetCategoryForm(); setIsAddingCategory(!isAddingCategory); }}
-              className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-all shadow-xs cursor-pointer"
+              className="inline-flex items-center space-x-1.5 sm:space-x-2 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-all shadow-xs cursor-pointer shrink-0"
             >
               <FolderPlus className="w-4 h-4" />
               <span>{isAddingCategory ? 'Cancel' : 'New Category'}</span>
@@ -218,7 +218,7 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
             <button
               type="button"
               onClick={() => { resetTagForm(); setIsAddingTag(!isAddingTag); }}
-              className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-all shadow-xs cursor-pointer"
+              className="inline-flex items-center space-x-1.5 sm:space-x-2 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-all shadow-xs cursor-pointer shrink-0"
             >
               <Plus className="w-4 h-4" />
               <span>{isAddingTag ? 'Cancel' : 'New Tag'}</span>
@@ -323,8 +323,9 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
 
           {/* Categories Table */}
           <div className="bg-white rounded-2xl border border-[#EAE6DF] shadow-2xs overflow-hidden">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-[#FAF8F5] text-[#6B6661] uppercase tracking-wider text-[10px] font-semibold border-b border-[#EAE6DF]">
+            <div className="overflow-x-auto w-full">
+              <table className="w-full text-left text-xs min-w-[580px]">
+                <thead className="bg-[#FAF8F5] text-[#6B6661] uppercase tracking-wider text-[10px] font-semibold border-b border-[#EAE6DF]">
                 <tr>
                   <th scope="col" className="px-5 py-3.5">Color & Name</th>
                   <th scope="col" className="px-5 py-3.5">Slug</th>
@@ -387,6 +388,7 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </>
       )}
@@ -396,7 +398,7 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
         <>
           {/* Creation / Edit Form Card for Tag */}
           {isAddingTag && (
-            <div className="p-6 rounded-2xl bg-white border border-[#FFB22C] shadow-sm animate-in fade-in space-y-4">
+            <div className="p-4 sm:p-6 rounded-2xl bg-white border border-[#FFB22C] shadow-sm animate-in fade-in space-y-4">
               <h3 className="font-serif text-lg font-bold text-[#343131]">
                 {editingTag ? `Edit Tag: #${editingTag.name}` : 'Create New Tag'}
               </h3>
@@ -438,70 +440,72 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
 
           {/* Tags Table */}
           <div className="bg-white rounded-2xl border border-[#EAE6DF] shadow-2xs overflow-hidden">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-[#FAF8F5] text-[#6B6661] uppercase tracking-wider text-[10px] font-semibold border-b border-[#EAE6DF]">
-                <tr>
-                  <th scope="col" className="px-5 py-3.5">Tag Name</th>
-                  <th scope="col" className="px-5 py-3.5">Slug</th>
-                  <th scope="col" className="px-4 py-3.5 text-center">Associated Stories</th>
-                  <th scope="col" className="px-5 py-3.5 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#EAE6DF]">
-                {tags.length === 0 ? (
+            <div className="overflow-x-auto w-full">
+              <table className="w-full text-left text-xs min-w-[580px]">
+                <thead className="bg-[#FAF8F5] text-[#6B6661] uppercase tracking-wider text-[10px] font-semibold border-b border-[#EAE6DF]">
                   <tr>
-                    <td colSpan={4} className="py-12 text-center text-[#96918B]">
-                      No tags found. Click &quot;New Tag&quot; or tags will be created automatically when publishing stories.
-                    </td>
+                    <th scope="col" className="px-5 py-3.5">Tag Name</th>
+                    <th scope="col" className="px-5 py-3.5">Slug</th>
+                    <th scope="col" className="px-4 py-3.5 text-center">Associated Stories</th>
+                    <th scope="col" className="px-5 py-3.5 text-right">Actions</th>
                   </tr>
-                ) : (
-                  tags.map(tag => {
-                    const tagId = tag.id || tag._id || '';
-                    return (
-                      <tr key={tagId} className="hover:bg-[#FAF8F5]/80 transition-colors">
-                        <td className="px-5 py-4 whitespace-nowrap">
-                          <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-[#FAF8F5] border border-[#EAE6DF] text-xs font-medium text-[#343131]">
-                            #{tag.name}
-                          </span>
-                        </td>
+                </thead>
+                <tbody className="divide-y divide-[#EAE6DF]">
+                  {tags.length === 0 ? (
+                    <tr>
+                      <td colSpan={4} className="py-12 text-center text-[#96918B]">
+                        No tags found. Click &quot;New Tag&quot; or tags will be created automatically when publishing stories.
+                      </td>
+                    </tr>
+                  ) : (
+                    tags.map(tag => {
+                      const tagId = tag.id || tag._id || '';
+                      return (
+                        <tr key={tagId} className="hover:bg-[#FAF8F5]/80 transition-colors">
+                          <td className="px-5 py-4 whitespace-nowrap">
+                            <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-[#FAF8F5] border border-[#EAE6DF] text-xs font-medium text-[#343131]">
+                              #{tag.name}
+                            </span>
+                          </td>
 
-                        <td className="px-5 py-4 whitespace-nowrap text-[#6B6661] font-mono text-[11px]">
-                          /{tag.slug}
-                        </td>
+                          <td className="px-5 py-4 whitespace-nowrap text-[#6B6661] font-mono text-[11px]">
+                            /{tag.slug}
+                          </td>
 
-                        <td className="px-4 py-4 whitespace-nowrap text-center">
-                          <span className="px-2.5 py-0.5 rounded-full bg-[#FAF3E0] text-[#8C5D00] font-semibold text-[11px]">
-                            {tag.postCount || 0}
-                          </span>
-                        </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-center">
+                            <span className="px-2.5 py-0.5 rounded-full bg-[#FAF3E0] text-[#8C5D00] font-semibold text-[11px]">
+                              {tag.postCount || 0}
+                            </span>
+                          </td>
 
-                        <td className="px-5 py-4 whitespace-nowrap text-right">
-                          <div className="flex items-center justify-end space-x-2">
-                            <button
-                              type="button"
-                              onClick={() => handleStartEditTag(tag)}
-                              className="p-1.5 rounded-lg border border-[#EAE6DF] text-[#6B6661] hover:text-[#FF8F00] hover:bg-[#FAF8F5] transition-colors cursor-pointer"
-                              title="Edit Tag"
-                            >
-                              <Edit2 className="w-3.5 h-3.5" />
-                            </button>
+                          <td className="px-5 py-4 whitespace-nowrap text-right">
+                            <div className="flex items-center justify-end space-x-2">
+                              <button
+                                type="button"
+                                onClick={() => handleStartEditTag(tag)}
+                                className="p-1.5 rounded-lg border border-[#EAE6DF] text-[#6B6661] hover:text-[#FF8F00] hover:bg-[#FAF8F5] transition-colors cursor-pointer"
+                                title="Edit Tag"
+                              >
+                                <Edit2 className="w-3.5 h-3.5" />
+                              </button>
 
-                            <button
-                              type="button"
-                              onClick={() => setItemToDelete({ id: tagId, name: tag.name, type: 'tag' })}
-                              className="p-1.5 rounded-lg border border-[#EAE6DF] text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
-                              title="Delete Tag"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
+                              <button
+                                type="button"
+                                onClick={() => setItemToDelete({ id: tagId, name: tag.name, type: 'tag' })}
+                                className="p-1.5 rounded-lg border border-[#EAE6DF] text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                                title="Delete Tag"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </>
       )}

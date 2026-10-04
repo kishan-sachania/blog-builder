@@ -124,7 +124,7 @@ export const AdminBlogList: React.FC<AdminBlogListProps> = ({ initialStatus = 'a
   return (
     <div className="bg-white rounded-2xl border border-[#EAE6DF] shadow-2xs overflow-hidden space-y-0">
       {/* Header & Filter Controls */}
-      <div className="p-5 border-b border-[#EAE6DF] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-4 sm:p-5 border-b border-[#EAE6DF] flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
           <h3 className="font-serif text-lg font-bold text-[#343131] flex items-center space-x-2">
             <BookOpen className="w-5 h-5 text-[#FF8F00]" />
@@ -136,15 +136,15 @@ export const AdminBlogList: React.FC<AdminBlogListProps> = ({ initialStatus = 'a
         </div>
 
         {/* Search & Filter */}
-        <div className="flex flex-wrap items-center gap-3">
-          <form onSubmit={handleSearch} className="relative">
-            <Search className="w-3.5 h-3.5 text-[#96918B] absolute left-3 top-1/2 -translate-y-1/2" />
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+          <form onSubmit={handleSearch} className="relative flex-1 sm:flex-initial min-w-[180px]">
+            <Search className="w-3.5 h-3.5 text-[#96918B] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               placeholder="Search by title or content..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 pr-8 py-1.5 text-xs bg-[#FAF8F5] border border-[#EAE6DF] rounded-xl text-[#343131] focus:outline-none focus:ring-2 focus:ring-[#FFB22C] w-48 sm:w-64"
+              className="w-full sm:w-56 lg:w-64 pl-8 pr-8 py-1.5 text-xs bg-[#FAF8F5] border border-[#EAE6DF] rounded-xl text-[#343131] focus:outline-none focus:ring-2 focus:ring-[#FFB22C]"
             />
             {searchQuery && (
               <button
@@ -154,7 +154,7 @@ export const AdminBlogList: React.FC<AdminBlogListProps> = ({ initialStatus = 'a
                   setPage(1);
                   setFilters((prev: any) => ({ ...prev, search: undefined }));
                 }}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#96918B] hover:text-[#343131]"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#96918B] hover:text-[#343131] cursor-pointer"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -162,13 +162,13 @@ export const AdminBlogList: React.FC<AdminBlogListProps> = ({ initialStatus = 'a
           </form>
 
           {/* Status Filter Tabs */}
-          <div className="flex items-center bg-[#FAF8F5] p-1 rounded-xl border border-[#EAE6DF] text-xs">
+          <div className="flex items-center bg-[#FAF8F5] p-1 rounded-xl border border-[#EAE6DF] text-xs overflow-x-auto max-w-full">
             {['all', 'published', 'draft'].map((st) => (
               <button
                 key={st}
                 type="button"
                 onClick={() => handleStatusChange(st)}
-                className={`px-3 py-1 rounded-lg font-medium capitalize transition-colors ${activeStatus === st
+                className={`px-3 py-1 rounded-lg font-medium capitalize whitespace-nowrap transition-colors cursor-pointer ${activeStatus === st
                     ? 'bg-[#343131] text-white'
                     : 'text-[#6B6661] hover:text-[#343131]'
                   }`}
@@ -182,7 +182,7 @@ export const AdminBlogList: React.FC<AdminBlogListProps> = ({ initialStatus = 'a
             type="button"
             onClick={() => refetch()}
             disabled={loading}
-            className="p-2 rounded-xl border border-[#EAE6DF] text-[#6B6661] hover:text-[#343131] hover:bg-[#FAF8F5] transition-colors"
+            className="p-2 rounded-xl border border-[#EAE6DF] text-[#6B6661] hover:text-[#343131] hover:bg-[#FAF8F5] transition-colors cursor-pointer shrink-0"
             title="Refresh list"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-[#FF8F00]' : ''}`} />
@@ -192,13 +192,13 @@ export const AdminBlogList: React.FC<AdminBlogListProps> = ({ initialStatus = 'a
 
       {/* Notifications */}
       {actionMessage && (
-        <div className="mx-5 my-3 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center space-x-2">
+        <div className="mx-4 sm:mx-5 my-3 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center space-x-2 animate-in fade-in">
           <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
           <span>{actionMessage}</span>
         </div>
       )}
       {actionError && (
-        <div className="mx-5 my-3 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center space-x-2">
+        <div className="mx-4 sm:mx-5 my-3 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center space-x-2 animate-in fade-in">
           <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
           <span>{actionError}</span>
         </div>
@@ -217,7 +217,7 @@ export const AdminBlogList: React.FC<AdminBlogListProps> = ({ initialStatus = 'a
           <button
             type="button"
             onClick={() => refetch()}
-            className="mt-3 px-4 py-1.5 rounded-xl text-xs font-semibold bg-[#FAF8F5] border border-[#EAE6DF] hover:bg-white text-[#343131]"
+            className="mt-3 px-4 py-1.5 rounded-xl text-xs font-semibold bg-[#FAF8F5] border border-[#EAE6DF] hover:bg-white text-[#343131] cursor-pointer"
           >
             Try Again
           </button>
@@ -230,8 +230,8 @@ export const AdminBlogList: React.FC<AdminBlogListProps> = ({ initialStatus = 'a
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left text-xs min-w-[700px]">
             <thead className="bg-[#FAF8F5] text-[#6B6661] uppercase tracking-wider text-[10px] font-semibold border-b border-[#EAE6DF]">
               <tr>
                 <th scope="col" className="px-5 py-3.5">Title & Excerpt</th>
@@ -257,7 +257,7 @@ export const AdminBlogList: React.FC<AdminBlogListProps> = ({ initialStatus = 'a
                       <div className="space-y-1">
                         <Link
                           href={`/studio/edit/${blogId}`}
-                          className="font-serif text-sm font-bold text-[#343131] hover:text-[#FF8F00] transition-colors block line-clamp-1"
+                          className="font-serif text-sm font-bold text-[#343131] hover:text-[#FF8F00] transition-colors line-clamp-2 leading-snug"
                         >
                           {blog.title}
                         </Link>

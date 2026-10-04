@@ -23,12 +23,12 @@ export default async function NewStoryPage() {
   const authorPosts = await blogService.getAllPosts({ authorId: user.id });
 
   return (
-    <div className="h-screen overflow-hidden bg-[#FAF8F5] flex">
-      <Suspense fallback={<div className="w-64 bg-white border-r shrink-0" />}>
+    <div className="min-h-screen md:h-screen md:overflow-hidden bg-[#FAF8F5] flex flex-col md:flex-row">
+      <Suspense fallback={<div className="hidden md:block w-64 bg-white border-r shrink-0" />}>
         <StudioSidebar user={user} counts={{ total: authorPosts.length }} />
       </Suspense>
 
-      <main className="flex-1 h-screen overflow-y-auto p-6 sm:p-8 lg:p-10 max-w-6xl">
+      <main className="flex-1 md:h-screen md:overflow-y-auto p-4 sm:p-6 lg:p-8 max-w-6xl w-full">
         <ArticleEditor categories={categories} />
       </main>
     </div>

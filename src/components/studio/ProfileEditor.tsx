@@ -64,10 +64,10 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ user }) => {
     <div className="space-y-6">
       {/* Admin Navigation Banner */}
       {isAdmin && (
-        <div className="p-5 rounded-3xl bg-[#232020] text-[#FAF8F5] flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-[#343131] shadow-2xs">
+        <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-[#232020] text-[#FAF8F5] flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-[#343131] shadow-2xs">
           <div className="flex items-center space-x-3.5">
-            <div className="w-10 h-10 rounded-2xl bg-[#FFB22C] flex items-center justify-center text-[#343131] shrink-0">
-              <Shield className="w-5 h-5 text-[#343131]" />
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-[#FFB22C] flex items-center justify-center text-[#343131] shrink-0">
+              <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-[#343131]" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
@@ -86,7 +86,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ user }) => {
 
           <Link
             href="/admin"
-            className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-all shadow-xs shrink-0 self-start sm:self-auto"
+            className="inline-flex items-center space-x-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-all shadow-xs shrink-0 self-start sm:self-auto"
           >
             <span>Open Admin Panel</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -95,7 +95,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ user }) => {
       )}
 
       {/* Main Profile Form Card */}
-      <div className="bg-white p-8 rounded-3xl border border-[#EAE6DF] shadow-2xs space-y-6">
+      <div className="bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-[#EAE6DF] shadow-2xs space-y-6">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {error && (
             <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center space-x-2 animate-in fade-in">

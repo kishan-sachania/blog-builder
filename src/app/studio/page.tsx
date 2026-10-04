@@ -46,13 +46,13 @@ export default async function StudioPage() {
   const isAdmin = user.role === 'admin';
 
   return (
-    <div className="h-screen overflow-hidden bg-[#FAF8F5] flex">
-      <Suspense fallback={<div className="w-64 bg-white border-r shrink-0" />}>
+    <div className="min-h-screen md:h-screen md:overflow-hidden bg-[#FAF8F5] flex flex-col md:flex-row">
+      <Suspense fallback={<div className="hidden md:block w-64 bg-white border-r shrink-0" />}>
         <StudioSidebar user={user} counts={{ total: counts.total }} />
       </Suspense>
 
-      <main className="flex-1 h-screen overflow-y-auto p-6 sm:p-8 lg:p-10 max-w-6xl">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <main className="flex-1 md:h-screen md:overflow-y-auto p-4 sm:p-6 lg:p-8 max-w-6xl w-full">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
           <div>
             <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#343131]">
               Author Studio
@@ -62,28 +62,28 @@ export default async function StudioPage() {
             </p>
           </div>
 
-          <div className="flex items-center space-x-3 shrink-0">
+          <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
             {isAdmin && (
               <Link
                 href="/admin"
-                className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#232020] text-[#FFB22C] hover:bg-[#343131] hover:text-white transition-all shadow-xs border border-[#343131]"
+                className="inline-flex items-center space-x-1.5 sm:space-x-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#232020] text-[#FFB22C] hover:bg-[#343131] hover:text-white transition-all shadow-xs border border-[#343131]"
               >
-                <Shield className="w-4 h-4 text-[#FFB22C]" />
+                <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#FFB22C]" />
                 <span>Admin Panel</span>
               </Link>
             )}
 
             <Link
               href="/studio/new"
-              className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-all shadow-xs"
+              className="inline-flex items-center space-x-1.5 sm:space-x-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-all shadow-xs"
             >
-              <PenSquare className="w-4 h-4" />
+              <PenSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>Write a New Story</span>
             </Link>
           </div>
         </div>
 
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <StudioStats
             total={counts.total}
             published={counts.published}

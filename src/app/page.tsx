@@ -17,7 +17,7 @@ export default async function HomePage() {
   const allPosts = await blogService.getAllPosts({ status: 'published' });
   const categories = await categoryService.getAllCategories();
 
-  const featuredPost = allPosts.find(p => p.featured);
+  const featuredPost = allPosts.find(p => p.featured) || (allPosts.length > 0 ? allPosts[0] : undefined);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF8F5]">

@@ -257,7 +257,7 @@ export const ArticleEditor: React.FC<ArticleEditorProps> = ({
         </div>
 
         {/* Action Buttons: Draft vs Publish */}
-        <div className="flex items-center space-x-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {isEditing && (
             <button
               type="button"
@@ -273,17 +273,17 @@ export const ArticleEditor: React.FC<ArticleEditorProps> = ({
             type="button"
             disabled={isSaving}
             onClick={() => handleSave('draft')}
-            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold border border-[#EAE6DF] bg-white text-[#343131] hover:bg-[#FAF8F5] transition-colors disabled:opacity-50 cursor-pointer"
+            className="inline-flex items-center space-x-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold border border-[#EAE6DF] bg-white text-[#343131] hover:bg-[#FAF8F5] transition-colors disabled:opacity-50 cursor-pointer"
           >
             <Save className="w-3.5 h-3.5 text-[#6B6661]" />
-            <span>{savingAction === 'draft' ? 'Saving...' : 'Save as Draft'}</span>
+            <span>{savingAction === 'draft' ? 'Saving...' : 'Save Draft'}</span>
           </button>
 
           <button
             type="button"
             disabled={isSaving}
             onClick={() => handleSave('published')}
-            className="inline-flex items-center space-x-2 px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-all shadow-xs disabled:opacity-50 cursor-pointer"
+            className="inline-flex items-center space-x-1.5 sm:space-x-2 px-4 sm:px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-all shadow-xs disabled:opacity-50 cursor-pointer"
           >
             <Send className="w-3.5 h-3.5" />
             <span>{savingAction === 'published' ? 'Publishing...' : 'Publish'}</span>
@@ -306,11 +306,11 @@ export const ArticleEditor: React.FC<ArticleEditorProps> = ({
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
         {/* Left: Title & Quill Rich Textarea */}
         <div className="lg:col-span-8 space-y-5">
           {/* Title Input */}
-          <div className="bg-white p-6 rounded-2xl border border-[#EAE6DF] shadow-2xs">
+          <div className="bg-white p-4 sm:p-6 rounded-2xl border border-[#EAE6DF] shadow-2xs">
             <input
               type="text"
               required
@@ -320,16 +320,16 @@ export const ArticleEditor: React.FC<ArticleEditorProps> = ({
                 if (errorMessage) setErrorMessage(null);
               }}
               placeholder="Title of your story..."
-              className="w-full font-serif text-2xl sm:text-3xl font-bold text-[#343131] placeholder-[#C2BCB3] border-none focus:outline-none bg-transparent"
+              className="w-full font-serif text-xl sm:text-2xl lg:text-3xl font-bold text-[#343131] placeholder-[#C2BCB3] border-none focus:outline-none bg-transparent"
             />
           </div>
 
           {/* Quill Rich Text Editor */}
-          <div className="bg-white rounded-2xl border border-[#EAE6DF] shadow-2xs overflow-hidden p-6 space-y-2">
+          <div className="bg-white rounded-2xl border border-[#EAE6DF] shadow-2xs overflow-hidden p-4 sm:p-6 space-y-2">
             <label className="block text-xs font-bold uppercase tracking-wider text-[#343131] mb-2">
               Story Body (Rich Text)
             </label>
-            <div className="prose-editor min-h-[350px]">
+            <div className="prose-editor min-h-[300px] sm:min-h-[350px]">
               <ReactQuill
                 theme="snow"
                 value={content}

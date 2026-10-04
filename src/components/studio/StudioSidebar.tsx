@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { User } from '@/types';
@@ -13,7 +13,9 @@ import {
   PenSquare,
   LogOut,
   ExternalLink,
-  Shield
+  Shield,
+  Menu,
+  X
 } from 'lucide-react';
 import { useApi } from '@/hooks/useApi';
 
@@ -32,6 +34,12 @@ export const StudioSidebar: React.FC<StudioSidebarProps> = ({ user, counts }) =>
   const pathname = usePathname();
   const router = useRouter();
   const { post } = useApi();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Close mobile drawer when route changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   const handleLogout = async () => {
     try {
@@ -67,23 +75,35 @@ export const StudioSidebar: React.FC<StudioSidebarProps> = ({ user, counts }) =>
 
   const isAdmin = user.role === 'admin';
 
-  return (
-    <aside className="w-64 bg-white border-r border-[#EAE6DF] h-screen sticky top-0 flex flex-col justify-between shrink-0 overflow-y-auto z-20">
+  const sidebarContent = (
+    <>
       <div className="p-5 space-y-6">
         {/* Brand header */}
-        <Link href="/" className="flex items-center space-x-2.5 group">
-          <div className="w-8 h-8 rounded-full bg-[#FFB22C] flex items-center justify-center text-[#343131] group-hover:bg-[#FF8F00] transition-colors">
-            <Feather className="w-4 h-4" />
-          </div>
-          <div>
-            <span className="font-serif font-bold text-base text-[#343131] block leading-tight">
-              Blog Builder
-            </span>
-            <span className="text-[10px] uppercase tracking-wider text-[#6B6661] font-semibold">
-              Writing Studio
-            </span>
-          </div>
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link href="/" className="flex items-center space-x-2.5 group">
+            <div className="w-8 h-8 rounded-full bg-[#FFB22C] flex items-center justify-center text-[#343131] group-hover:bg-[#FF8F00] transition-colors">
+              <Feather className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="font-serif font-bold text-base text-[#343131] block leading-tight">
+                Blog Builder
+              </span>
+              <span className="text-[10px] uppercase tracking-wider text-[#6B6661] font-semibold">
+                Writing Studio
+              </span>
+            </div>
+          </Link>
+
+          {/* Close button for mobile drawer */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(false)}
+            className="md:hidden p-1.5 rounded-lg text-[#6B6661] hover:text-[#343131] hover:bg-[#FAF8F5]"
+            aria-label="Close menu"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
 
         {/* Primary Action */}
         <Link
@@ -102,7 +122,7 @@ export const StudioSidebar: React.FC<StudioSidebarProps> = ({ user, counts }) =>
               <Link
                 key={item.label}
                 href={item.href}
-                className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors ${item.isActive
+                className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-colors ${item.isActive
                   ? 'bg-[#FAF3E0] text-[#8C5D00] font-semibold'
                   : 'text-[#6B6661] hover:bg-[#FAF8F5] hover:text-[#343131]'
                   }`}
@@ -142,7 +162,7 @@ export const StudioSidebar: React.FC<StudioSidebarProps> = ({ user, counts }) =>
           <Avatar src={user.avatarUrl} name={user.name} size="sm" />
           <div className="overflow-hidden">
             <p className="text-xs font-semibold text-[#343131] truncate">{user.name}</p>
-            <p className="text-[10px] text-[#6B6661] truncate">{user.title}</p>
+            <p className="text-[10px] text-[#6B6661] truncate">{user.title || 'Author'}</p>
           </div>
         </div>
 
@@ -164,6 +184,62 @@ export const StudioSidebar: React.FC<StudioSidebarProps> = ({ user, counts }) =>
           </button>
         </div>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Mobile Top Navigation Header */}
+      <header className="md:hidden sticky top-0 z-30 bg-white border-b border-[#EAE6DF] px-4 py-3 flex items-center justify-between shadow-2xs">
+        <Link href="/studio" className="flex items-center space-x-2">
+          <div className="w-7 h-7 rounded-full bg-[#FFB22C] flex items-center justify-center text-[#343131]">
+            <Feather className="w-3.5 h-3.5" />
+          </div>
+          <span className="font-serif font-bold text-sm text-[#343131]">
+            Author Studio
+          </span>
+        </Link>
+
+        <div className="flex items-center space-x-2">
+          <Link
+            href="/studio/new"
+            className="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-[#FFB22C] text-[#343131]"
+          >
+            <PenSquare className="w-3.5 h-3.5" />
+            <span>Write</span>
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(true)}
+            className="p-1.5 rounded-lg border border-[#EAE6DF] text-[#343131] hover:bg-[#FAF8F5]"
+            aria-label="Open navigation menu"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile Drawer (Overlay) */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/40 backdrop-blur-2xs transition-opacity"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+
+          {/* Drawer Panel */}
+          <div className="fixed inset-y-0 left-0 w-72 max-w-[80vw] bg-white shadow-xl flex flex-col justify-between overflow-y-auto z-10 animate-in slide-in-from-left duration-200">
+            {sidebarContent}
+          </div>
+        </div>
+      )}
+
+      {/* Desktop Sticky Sidebar */}
+      <aside className="hidden md:flex w-64 bg-white border-r border-[#EAE6DF] h-screen sticky top-0 flex-col justify-between shrink-0 overflow-y-auto z-20">
+        {sidebarContent}
+      </aside>
+    </>
   );
 };

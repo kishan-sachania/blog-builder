@@ -375,11 +375,11 @@ export const ManageUsers: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
           <button
             type="button"
             onClick={() => setIsAddingUser(true)}
-            className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-all shadow-xs cursor-pointer"
+            className="inline-flex items-center space-x-1.5 sm:space-x-2 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-all shadow-xs cursor-pointer"
           >
             <UserPlus className="w-4 h-4" />
             <span>Add New Employee</span>
@@ -414,7 +414,7 @@ export const ManageUsers: React.FC = () => {
 
       {/* Add Employee Modal */}
       {isAddingUser && (
-        <div className="p-6 rounded-2xl bg-white border border-[#FFB22C] shadow-sm animate-in fade-in space-y-4">
+        <div className="p-4 sm:p-6 rounded-2xl bg-white border border-[#FFB22C] shadow-sm animate-in fade-in space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-serif text-lg font-bold text-[#343131] flex items-center space-x-2">
               <UserPlus className="w-5 h-5 text-[#FF8F00]" />
@@ -438,7 +438,7 @@ export const ManageUsers: React.FC = () => {
       )}
 
       {/* Filter & Sort Controls Card */}
-      <div className="bg-white p-5 rounded-2xl border border-[#EAE6DF] shadow-2xs space-y-4">
+      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-[#EAE6DF] shadow-2xs space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3.5 items-center">
           {/* Search Input */}
           <form onSubmit={handleSearchSubmit} className="md:col-span-5 relative">
@@ -585,8 +585,8 @@ export const ManageUsers: React.FC = () => {
             </button>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+          <div className="overflow-x-auto w-full">
+            <table className="w-full text-left border-collapse min-w-[650px]">
               <thead>
                 <tr className="bg-[#FAF8F5] border-b border-[#EAE6DF] text-[11px] font-bold uppercase tracking-wider text-[#6B6661]">
                   <th className="py-3 px-5">User</th>

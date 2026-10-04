@@ -57,25 +57,25 @@ export const AdminStats: React.FC<AdminStatsProps> = ({
   return (
     <div className="space-y-4">
       {/* Metric Cards Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {cards.map(card => {
           const Icon = card.icon;
           return (
             <div
               key={card.label}
-              className={`p-5 rounded-2xl border shadow-2xs flex flex-col justify-between ${card.borderColor}`}
+              className={`p-3.5 sm:p-5 rounded-2xl border shadow-2xs flex flex-col justify-between ${card.borderColor}`}
             >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-[#6B6661]">{card.label}</span>
-                <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${card.color}`}>
-                  <Icon className="w-3.5 h-3.5" />
+              <div className="flex items-center justify-between mb-2 sm:mb-3">
+                <span className="text-[11px] sm:text-xs font-semibold text-[#6B6661] truncate mr-1">{card.label}</span>
+                <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center shrink-0 ${card.color}`}>
+                  <Icon className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 </div>
               </div>
               <div>
-                <span className="font-serif text-2xl sm:text-3xl font-bold text-[#343131]">
+                <span className="font-serif text-xl sm:text-2xl lg:text-3xl font-bold text-[#343131]">
                   {card.value}
                 </span>
-                <p className="text-[10px] text-[#96918B] mt-1">{card.description}</p>
+                <p className="text-[10px] sm:text-[11px] text-[#96918B] mt-0.5 sm:mt-1 truncate">{card.description}</p>
               </div>
             </div>
           );

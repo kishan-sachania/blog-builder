@@ -19,12 +19,12 @@ export default async function AdminUsersPage() {
   }
 
   return (
-    <div className="h-screen bg-[#FAF8F5] flex overflow-hidden">
-      <Suspense fallback={<div className="w-64 bg-[#232020] h-screen shrink-0" />}>
+    <div className="min-h-screen md:h-screen md:overflow-hidden bg-[#FAF8F5] flex flex-col md:flex-row">
+      <Suspense fallback={<div className="hidden md:block w-64 bg-[#232020] h-screen shrink-0" />}>
         <AdminSidebar user={user} pendingReviewsCount={0} />
       </Suspense>
 
-      <main className="flex-1 h-screen overflow-y-auto p-6 sm:p-8 lg:p-10 max-w-7xl">
+      <main className="flex-1 md:h-screen md:overflow-y-auto p-4 sm:p-6 lg:p-8 max-w-7xl w-full">
         <ManageUsers />
       </main>
     </div>

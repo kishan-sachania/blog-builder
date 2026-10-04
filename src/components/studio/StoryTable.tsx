@@ -259,8 +259,8 @@ export const StoryTable: React.FC<StoryTableProps> = ({
 
       {/* Filter & Search Toolbar (Only on All Stories / non-overview page) */}
       {!isOverview && (
-        <div className="p-5 border-b border-[#EAE6DF] bg-[#FAF8F5]/50 space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3">
+        <div className="p-4 sm:p-5 border-b border-[#EAE6DF] bg-[#FAF8F5]/50 space-y-3 sm:space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2.5 sm:gap-3">
             {/* Search Input (By title, excerpt, tag, category) */}
             <div className="relative sm:col-span-2 lg:col-span-4">
               <Search className="w-3.5 h-3.5 text-[#96918B] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -284,7 +284,7 @@ export const StoryTable: React.FC<StoryTableProps> = ({
             </div>
 
             {/* Category Filter */}
-            <div className="lg:col-span-3">
+            <div className="sm:col-span-1 lg:col-span-3">
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
@@ -300,7 +300,7 @@ export const StoryTable: React.FC<StoryTableProps> = ({
             </div>
 
             {/* Tag Filter */}
-            <div className="lg:col-span-3">
+            <div className="sm:col-span-1 lg:col-span-3">
               <select
                 value={selectedTag}
                 onChange={(e) => setSelectedTag(e.target.value)}
@@ -316,7 +316,7 @@ export const StoryTable: React.FC<StoryTableProps> = ({
             </div>
 
             {/* Sort Dropdown */}
-            <div className="lg:col-span-2">
+            <div className="sm:col-span-2 lg:col-span-2">
               <select
                 value={sortBy}
                 onChange={(e) =>
@@ -334,22 +334,22 @@ export const StoryTable: React.FC<StoryTableProps> = ({
 
           {/* Status Segmented Tabs */}
           <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-            <div className="inline-flex items-center p-1 bg-white border border-[#EAE6DF] rounded-xl shadow-2xs text-xs">
+            <div className="inline-flex items-center p-1 bg-white border border-[#EAE6DF] rounded-xl shadow-2xs text-xs overflow-x-auto max-w-full">
               <button
                 type="button"
                 onClick={() => setSelectedStatus('all')}
-                className={`px-3 py-1 rounded-lg font-medium transition-colors cursor-pointer ${
+                className={`px-3 py-1 rounded-lg font-medium whitespace-nowrap transition-colors cursor-pointer ${
                   selectedStatus === 'all'
                     ? 'bg-[#343131] text-white font-semibold shadow-2xs'
                     : 'text-[#6B6661] hover:text-[#343131]'
                 }`}
               >
-                All Statuses ({stories.length})
+                All ({stories.length})
               </button>
               <button
                 type="button"
                 onClick={() => setSelectedStatus('published')}
-                className={`px-3 py-1 rounded-lg font-medium transition-colors cursor-pointer ${
+                className={`px-3 py-1 rounded-lg font-medium whitespace-nowrap transition-colors cursor-pointer ${
                   selectedStatus === 'published'
                     ? 'bg-[#343131] text-white font-semibold shadow-2xs'
                     : 'text-[#6B6661] hover:text-[#343131]'
@@ -360,7 +360,7 @@ export const StoryTable: React.FC<StoryTableProps> = ({
               <button
                 type="button"
                 onClick={() => setSelectedStatus('draft')}
-                className={`px-3 py-1 rounded-lg font-medium transition-colors cursor-pointer ${
+                className={`px-3 py-1 rounded-lg font-medium whitespace-nowrap transition-colors cursor-pointer ${
                   selectedStatus === 'draft'
                     ? 'bg-[#343131] text-white font-semibold shadow-2xs'
                     : 'text-[#6B6661] hover:text-[#343131]'
@@ -385,10 +385,10 @@ export const StoryTable: React.FC<StoryTableProps> = ({
           {/* Active Filter Chips */}
           {hasActiveFilters && (
             <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
-              <span className="text-[#6B6661] font-semibold">Active filters:</span>
+              <span className="text-[#6B6661] font-semibold text-[11px]">Active filters:</span>
 
               {searchQuery.trim() && (
-                <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-[#FAF3E0] text-[#8C5D00] border border-[#E8D8BA]">
+                <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-[#FAF3E0] text-[#8C5D00] border border-[#E8D8BA] text-[11px]">
                   <span>Search: &quot;{searchQuery}&quot;</span>
                   <button
                     type="button"
@@ -401,7 +401,7 @@ export const StoryTable: React.FC<StoryTableProps> = ({
               )}
 
               {selectedCategory !== 'all' && (
-                <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-[#FAF3E0] text-[#8C5D00] border border-[#E8D8BA]">
+                <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-[#FAF3E0] text-[#8C5D00] border border-[#E8D8BA] text-[11px]">
                   <span>
                     Category:{' '}
                     {categories.find((c) => c.id === selectedCategory)?.name || selectedCategory}
@@ -417,7 +417,7 @@ export const StoryTable: React.FC<StoryTableProps> = ({
               )}
 
               {selectedTag !== 'all' && (
-                <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-[#FAF3E0] text-[#8C5D00] border border-[#E8D8BA]">
+                <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-[#FAF3E0] text-[#8C5D00] border border-[#E8D8BA] text-[11px]">
                   <span>Tag: #{selectedTag}</span>
                   <button
                     type="button"
@@ -430,7 +430,7 @@ export const StoryTable: React.FC<StoryTableProps> = ({
               )}
 
               {selectedStatus !== 'all' && (
-                <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-[#FAF3E0] text-[#8C5D00] border border-[#E8D8BA]">
+                <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-[#FAF3E0] text-[#8C5D00] border border-[#E8D8BA] text-[11px]">
                   <span>Status: {selectedStatus}</span>
                   <button
                     type="button"
@@ -477,8 +477,8 @@ export const StoryTable: React.FC<StoryTableProps> = ({
           </div>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left text-xs min-w-[700px]">
             <thead className="bg-[#FAF8F5] text-[#6B6661] uppercase tracking-wider text-[10px] font-semibold border-b border-[#EAE6DF]">
               <tr>
                 <th scope="col" className="px-5 py-3.5">Title & Excerpt</th>
@@ -502,7 +502,7 @@ export const StoryTable: React.FC<StoryTableProps> = ({
                       <div className="space-y-1">
                         <Link
                           href={`/studio/edit/${story.id}`}
-                          className="font-serif text-sm font-bold text-[#343131] hover:text-[#FF8F00] transition-colors block line-clamp-1"
+                          className="font-serif text-sm font-bold text-[#343131] hover:text-[#FF8F00] transition-colors line-clamp-2 leading-snug"
                         >
                           {story.title}
                         </Link>

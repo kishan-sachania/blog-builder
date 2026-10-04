@@ -84,7 +84,7 @@ export const ModerationModal: React.FC<ModerationModalProps> = ({
         </div>
 
         {/* Modal Scrollable Body */}
-        <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
           {error && (
             <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center space-x-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
@@ -93,7 +93,7 @@ export const ModerationModal: React.FC<ModerationModalProps> = ({
           )}
 
           {/* Author bar */}
-          <div className="flex items-center justify-between pb-6 border-b border-[#EAE6DF]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-[#EAE6DF]">
             <div className="flex items-center space-x-3.5">
               <Avatar src={post.authorAvatar} name={post.authorName} size="md" />
               <div>
@@ -115,10 +115,10 @@ export const ModerationModal: React.FC<ModerationModalProps> = ({
             <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#FAF3E0] text-[#8C5D00]">
               {post.categoryName}
             </span>
-            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#343131] leading-tight">
+            <h2 className="font-serif text-xl sm:text-2xl lg:text-3xl font-bold text-[#343131] leading-tight">
               {post.title}
             </h2>
-            <p className="text-base text-[#6B6661] italic leading-relaxed">
+            <p className="text-sm sm:text-base text-[#6B6661] italic leading-relaxed">
               {post.excerpt}
             </p>
           </div>
@@ -141,7 +141,7 @@ export const ModerationModal: React.FC<ModerationModalProps> = ({
             <h5 className="text-xs font-bold uppercase tracking-wider text-[#96918B] mb-3">
               Full Text Submission
             </h5>
-            <div className="prose-editorial max-w-none text-sm leading-relaxed space-y-4 text-[#343131] bg-[#FAF8F5] p-6 rounded-2xl border border-[#EAE6DF]">
+            <div className="prose-editorial max-w-none text-xs sm:text-sm leading-relaxed space-y-4 text-[#343131] bg-[#FAF8F5] p-4 sm:p-6 rounded-2xl border border-[#EAE6DF]">
               {(post.content || '').split('\n\n').map((para: string, i: number) => (
                 <p key={i}>{para}</p>
               ))}
@@ -167,23 +167,23 @@ export const ModerationModal: React.FC<ModerationModalProps> = ({
         </div>
 
         {/* Modal Action Controls Footer */}
-        <div className="p-5 border-t border-[#EAE6DF] bg-[#FAF8F5] flex flex-wrap items-center justify-between gap-3">
+        <div className="p-4 sm:p-5 border-t border-[#EAE6DF] bg-[#FAF8F5] flex flex-wrap items-center justify-between gap-3">
           <button
             type="button"
             onClick={() => handleModeration('archived')}
             disabled={isProcessing}
-            className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-stone-600 hover:bg-stone-200 transition-colors disabled:opacity-50"
+            className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-stone-600 hover:bg-stone-200 transition-colors disabled:opacity-50 cursor-pointer"
           >
             <Archive className="w-3.5 h-3.5" />
             <span>Archive</span>
           </button>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <button
               type="button"
               onClick={() => handleModeration('changes_requested')}
               disabled={isProcessing}
-              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold border border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100 transition-colors disabled:opacity-50"
+              className="inline-flex items-center space-x-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold border border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100 transition-colors disabled:opacity-50 cursor-pointer"
             >
               <FileEdit className="w-3.5 h-3.5 text-amber-700" />
               <span>Request Changes</span>
@@ -193,7 +193,7 @@ export const ModerationModal: React.FC<ModerationModalProps> = ({
               type="button"
               onClick={() => handleModeration('rejected')}
               disabled={isProcessing}
-              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold border border-rose-200 bg-rose-50 text-rose-800 hover:bg-rose-100 transition-colors disabled:opacity-50"
+              className="inline-flex items-center space-x-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold border border-rose-200 bg-rose-50 text-rose-800 hover:bg-rose-100 transition-colors disabled:opacity-50 cursor-pointer"
             >
               <XCircle className="w-3.5 h-3.5 text-rose-600" />
               <span>Reject Submission</span>
@@ -203,7 +203,7 @@ export const ModerationModal: React.FC<ModerationModalProps> = ({
               type="button"
               onClick={() => handleModeration('approved')}
               disabled={isProcessing}
-              className="inline-flex items-center space-x-2 px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-xs disabled:opacity-50"
+              className="inline-flex items-center space-x-2 px-4 sm:px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-xs disabled:opacity-50 cursor-pointer"
             >
               <CheckCircle2 className="w-4 h-4" />
               <span>Approve & Publish</span>

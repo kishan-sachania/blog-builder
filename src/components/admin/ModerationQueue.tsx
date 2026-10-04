@@ -92,7 +92,7 @@ export const ModerationQueue: React.FC<ModerationQueueProps> = ({
               <div
                 key={post.id}
                 onClick={() => handleOpenReview(post)}
-                className="p-5 hover:bg-[#FAF8F5] transition-colors cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4"
+                className="p-4 sm:p-5 hover:bg-[#FAF8F5] transition-colors cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4"
               >
                 {/* Author and Story info */}
                 <div className="space-y-2 flex-1">
@@ -112,7 +112,7 @@ export const ModerationQueue: React.FC<ModerationQueueProps> = ({
                     </span>
                   </div>
 
-                  <h4 className="font-serif text-base sm:text-lg font-bold text-[#343131] hover:text-[#FF8F00] transition-colors">
+                  <h4 className="font-serif text-base sm:text-lg font-bold text-[#343131] hover:text-[#FF8F00] transition-colors line-clamp-2 leading-snug">
                     {post.title}
                   </h4>
 
@@ -122,11 +122,11 @@ export const ModerationQueue: React.FC<ModerationQueueProps> = ({
                 </div>
 
                 {/* Action buttons */}
-                <div className="flex items-center space-x-2 shrink-0 self-end md:self-center" onClick={e => e.stopPropagation()}>
+                <div className="flex flex-wrap items-center gap-2 shrink-0 self-start sm:self-end md:self-center" onClick={e => e.stopPropagation()}>
                   <button
                     type="button"
                     onClick={() => handleOpenReview(post)}
-                    className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border border-[#EAE6DF] bg-white text-[#343131] hover:bg-[#FAF8F5] transition-colors"
+                    className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border border-[#EAE6DF] bg-white text-[#343131] hover:bg-[#FAF8F5] transition-colors cursor-pointer"
                   >
                     <Eye className="w-3.5 h-3.5 text-[#6B6661]" />
                     <span>Review Full Text</span>
@@ -136,7 +136,7 @@ export const ModerationQueue: React.FC<ModerationQueueProps> = ({
                     type="button"
                     disabled={quickProcessingId === post.id}
                     onClick={e => handleQuickApprove(post.id, e)}
-                    className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-xs disabled:opacity-50"
+                    className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-xs disabled:opacity-50 cursor-pointer"
                   >
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     <span>{quickProcessingId === post.id ? 'Publishing...' : 'Approve'}</span>

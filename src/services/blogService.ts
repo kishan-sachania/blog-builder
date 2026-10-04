@@ -62,7 +62,7 @@ export function formatBlogPost(doc: any): Post {
     authorAvatar: author.avatar || '',
     status: plain.status || 'draft',
     viewCount: plain.views || 0,
-    featured: false,
+    featured: Boolean(plain.featured || false),
     editorialNotes: plain.editorialNotes || '',
     submittedAt: plain.submittedAt ? new Date(plain.submittedAt).toISOString() : undefined,
     createdAt: plain.createdAt ? new Date(plain.createdAt).toISOString() : new Date().toISOString(),

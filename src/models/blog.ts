@@ -43,6 +43,10 @@ const blogSchema = new Schema(
       default: 0,
       min: 0,
     },
+    featured: {
+      type: Boolean,
+      default: false,
+    },
     editorialNotes: {
       type: String,
       default: '',
