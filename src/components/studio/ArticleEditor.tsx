@@ -85,7 +85,9 @@ export const ArticleEditor: React.FC<ArticleEditorProps> = ({
   const [coverImage, setCoverImage] = useState(initialPost?.coverImage || '');
   const [tags, setTags] = useState<string[]>(initialPost?.tags || ['Engineering', 'Tech']);
   const [tagInput, setTagInput] = useState('');
+  const [status, setStatus] = useState<string>(initialPost?.status || 'draft');
   const [isSaving, setIsSaving] = useState(false);
+  const [savingAction, setSavingAction] = useState<'draft' | 'published' | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -177,6 +179,7 @@ export const ArticleEditor: React.FC<ArticleEditorProps> = ({
     }
 
     setIsSaving(true);
+    setSavingAction(targetStatus);
 
     try {
       const payload = {
@@ -210,6 +213,7 @@ export const ArticleEditor: React.FC<ArticleEditorProps> = ({
       setErrorMessage(err.response?.data?.message || err.message || 'Error saving story');
     } finally {
       setIsSaving(false);
+      setSavingAction(null);
     }
   };
 
@@ -272,7 +276,7 @@ export const ArticleEditor: React.FC<ArticleEditorProps> = ({
             className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold border border-[#EAE6DF] bg-white text-[#343131] hover:bg-[#FAF8F5] transition-colors disabled:opacity-50 cursor-pointer"
           >
             <Save className="w-3.5 h-3.5 text-[#6B6661]" />
-            <span>{isSaving && status === 'draft' ? 'Saving...' : 'Save as Draft'}</span>
+            <span>{savingAction === 'draft' ? 'Saving...' : 'Save as Draft'}</span>
           </button>
 
           <button
@@ -282,7 +286,7 @@ export const ArticleEditor: React.FC<ArticleEditorProps> = ({
             className="inline-flex items-center space-x-2 px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-all shadow-xs disabled:opacity-50 cursor-pointer"
           >
             <Send className="w-3.5 h-3.5" />
-            <span>{isSaving && status === 'published' ? 'Publishing...' : 'Publish'}</span>
+            <span>{savingAction === 'published' ? 'Publishing...' : 'Publish'}</span>
           </button>
         </div>
       </div>
