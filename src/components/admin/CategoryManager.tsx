@@ -79,6 +79,14 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
 
     try {
       if (editingCategory) {
+        const isUnchanged =
+          catName.trim() === (editingCategory.name || '').trim() &&
+          catDescription.trim() === (editingCategory.description || '').trim() &&
+          catColor === (editingCategory.color || '#E58A00');
+        if (isUnchanged) {
+          resetCategoryForm();
+          return;
+        }
         await put(`/api/category/${editingCategory.id}`, {
           name: catName.trim(),
           description: catDescription.trim(),
@@ -122,6 +130,10 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
 
     try {
       if (editingTag) {
+        if (tagName.trim() === (editingTag.name || '').trim()) {
+          resetTagForm();
+          return;
+        }
         const tagId = editingTag.id || editingTag._id;
         await put(`/api/tag/${tagId}`, { name: tagName.trim() });
         setStatusMessage('Tag updated successfully');

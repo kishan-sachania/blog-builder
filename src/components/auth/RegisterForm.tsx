@@ -71,7 +71,7 @@ export const RegisterForm: React.FC = () => {
               <input
                 type="text"
                 autoComplete="name"
-                placeholder="e.g. Julian Hayes"
+                placeholder="e.g. John Doe"
                 {...register('name')}
                 className={`w-full pl-10 pr-3.5 py-2.5 text-xs bg-white border rounded-xl text-[#343131] placeholder-[#96918B] focus:outline-none focus:ring-2 focus:ring-[#FFB22C] transition-colors ${
                   errors.name ? 'border-rose-400 focus:border-rose-400 focus:ring-rose-200' : 'border-[#EAE6DF]'
@@ -95,7 +95,7 @@ export const RegisterForm: React.FC = () => {
               <input
                 type="email"
                 autoComplete="email"
-                placeholder="julian.hayes@company.internal"
+                placeholder="john.doe@company.com"
                 {...register('email')}
                 className={`w-full pl-10 pr-3.5 py-2.5 text-xs bg-white border rounded-xl text-[#343131] placeholder-[#96918B] focus:outline-none focus:ring-2 focus:ring-[#FFB22C] transition-colors ${
                   errors.email ? 'border-rose-400 focus:border-rose-400 focus:ring-rose-200' : 'border-[#EAE6DF]'

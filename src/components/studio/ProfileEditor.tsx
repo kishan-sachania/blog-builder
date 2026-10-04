@@ -26,7 +26,8 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ user }) => {
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    reset,
+    formState: { errors, isDirty },
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -38,9 +39,20 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ user }) => {
 
   const onSubmit = async (data: ProfileFormData) => {
     setSuccessMessage(null);
+
+    const nameChanged = (data.name?.trim() || '') !== (user.name || '').trim();
+    const bioChanged = (data.bio?.trim() || '') !== (user.bio || '').trim();
+    const avatarChanged = (data.avatarUrl || '') !== (user.avatarUrl || '');
+
+    // Avoid triggering API if no changes were made
+    if (!isDirty || (!nameChanged && !bioChanged && !avatarChanged)) {
+      return;
+    }
+
     try {
       await put(`/api/user/${user.id}`, data);
       setSuccessMessage('Profile updated successfully!');
+      reset(data);
       setTimeout(() => setSuccessMessage(null), 3500);
       router.refresh();
     } catch {
@@ -119,7 +131,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ user }) => {
             </label>
             <input
               type="text"
-              placeholder="Your full name"
+              placeholder="e.g. John Doe"
               {...register('name')}
               className={`w-full px-3.5 py-2.5 text-xs bg-white border rounded-xl text-[#343131] placeholder-[#96918B] focus:outline-none focus:ring-2 focus:ring-[#FFB22C] transition-colors ${
                 errors.name ? 'border-rose-400 focus:border-rose-400 focus:ring-rose-200' : 'border-[#EAE6DF]'
@@ -155,8 +167,8 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ user }) => {
           <div className="flex justify-end pt-2">
             <button
               type="submit"
-              disabled={isSaving}
-              className="inline-flex items-center space-x-2 px-8 py-3 text-xs font-bold uppercase tracking-wider rounded-xl bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-all shadow-xs disabled:opacity-50 cursor-pointer"
+              disabled={isSaving || !isDirty}
+              className="inline-flex items-center space-x-2 px-8 py-3 text-xs font-bold uppercase tracking-wider rounded-xl bg-[#FFB22C] text-[#343131] hover:bg-[#FF8F00] hover:text-white transition-all shadow-xs disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {isSaving ? (
                 <>
