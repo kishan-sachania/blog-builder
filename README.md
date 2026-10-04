@@ -318,17 +318,6 @@ npm run start
 
 ---
 
-## Demo Accounts
-
-When seeded using `npm run db:sample`, the following accounts are ready for testing:
-
-| Role | Email | Password | Access Scope |
-|---|---|---|---|
-| **System Administrator / Editor-in-Chief** | `admin@example.com` | `password123` | Full access across `/admin`, Moderation Queue, Story Management, Taxonomy, User Admin, `/studio`, and the public journal. |
-| **Staff Author / Contributor** | `author@example.com` | `password123` | Author Studio (`/studio`), story writing & drafting (`/studio/new`), personal story table, and profile settings. |
-| **Staff Author (Kishan)** | `kishan@gmail.com` | `password123` | Author Studio (`/studio`), story draft submissions, profile updates. |
-
----
 
 ## Available Scripts
 
