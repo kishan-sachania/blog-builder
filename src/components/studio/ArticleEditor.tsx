@@ -20,6 +20,7 @@ import {
   Send,
   Loader2
 } from 'lucide-react';
+import { ConfirmationModal } from '@/components/common/ConfirmationModal';
 
 import 'react-quill-new/dist/quill.snow.css';
 
@@ -84,9 +85,9 @@ export const ArticleEditor: React.FC<ArticleEditorProps> = ({
   const [coverImage, setCoverImage] = useState(initialPost?.coverImage || '');
   const [tags, setTags] = useState<string[]>(initialPost?.tags || ['Engineering', 'Tech']);
   const [tagInput, setTagInput] = useState('');
-  const [status, setStatus] = useState<'draft' | 'published'>(initialPost?.status === 'published' ? 'published' : 'draft');
-
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -212,17 +213,20 @@ export const ArticleEditor: React.FC<ArticleEditorProps> = ({
     }
   };
 
-  const handleDelete = async () => {
+  const handleConfirmDelete = async () => {
     if (!initialPost) return;
-    if (!confirm('Are you sure you want to delete this story?')) return;
 
     const postId = initialPost?._id || initialPost?.id;
+    setIsDeleting(true);
     try {
       await del(`/api/blog/${postId}`);
+      setShowDeleteModal(false);
       router.push('/studio');
       router.refresh();
     } catch (err: any) {
-      alert(err.response?.data?.message || err.message || 'Error deleting story');
+      setErrorMessage(err.response?.data?.message || err.message || 'Error deleting story');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -253,7 +257,7 @@ export const ArticleEditor: React.FC<ArticleEditorProps> = ({
           {isEditing && (
             <button
               type="button"
-              onClick={handleDelete}
+              onClick={() => setShowDeleteModal(true)}
               className="p-2 rounded-xl border border-[#EAE6DF] text-rose-600 hover:bg-rose-50 hover:border-rose-200 transition-colors cursor-pointer"
               title="Delete story"
             >
@@ -447,6 +451,27 @@ export const ArticleEditor: React.FC<ArticleEditorProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Story"
+        message={
+          <span>
+            Are you sure you want to permanently delete{' '}
+            <strong className="font-bold text-[#343131]">
+              &quot;{title || initialPost?.title || 'this story'}&quot;
+            </strong>
+            ? This action cannot be undone.
+          </span>
+        }
+        confirmText="Delete Story"
+        cancelText="Cancel"
+        variant="danger"
+        isLoading={isDeleting}
+      />
     </div>
   );
 };

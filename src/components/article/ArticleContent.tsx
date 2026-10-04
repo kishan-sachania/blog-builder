@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Tag } from 'lucide-react';
 
 interface ArticleContentProps {
@@ -58,12 +59,13 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({
             Filed under:
           </span>
           {tags.map(tag => (
-            <span
+            <Link
               key={tag}
-              className="inline-flex items-center text-xs font-medium text-[#44403c] bg-white border border-[#EAE6DF] px-3 py-1 rounded-full hover:border-[#FFB22C] transition-colors"
+              href={`/?tag=${encodeURIComponent(tag)}#recent-stories`}
+              className="inline-flex items-center text-xs font-medium text-[#44403c] bg-white border border-[#EAE6DF] px-3 py-1 rounded-full hover:border-[#FFB22C] hover:text-[#8C5D00] hover:bg-[#FAF3E0] transition-colors cursor-pointer"
             >
               #{tag}
-            </span>
+            </Link>
           ))}
         </div>
       )}

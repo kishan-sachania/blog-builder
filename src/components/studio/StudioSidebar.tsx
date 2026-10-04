@@ -68,7 +68,7 @@ export const StudioSidebar: React.FC<StudioSidebarProps> = ({ user, counts }) =>
   const isAdmin = user.role === 'admin';
 
   return (
-    <aside className="w-64 bg-white border-r border-[#EAE6DF] min-h-screen flex flex-col justify-between shrink-0">
+    <aside className="w-64 bg-white border-r border-[#EAE6DF] h-screen sticky top-0 flex flex-col justify-between shrink-0 overflow-y-auto z-20">
       <div className="p-5 space-y-6">
         {/* Brand header */}
         <Link href="/" className="flex items-center space-x-2.5 group">

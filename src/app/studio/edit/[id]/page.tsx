@@ -33,12 +33,12 @@ export default async function EditStoryPage({ params }: PageProps) {
   const authorPosts = await blogService.getAllPosts({ authorId: user.id });
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] flex">
-      <Suspense fallback={<div className="w-64 bg-white border-r" />}>
+    <div className="h-screen overflow-hidden bg-[#FAF8F5] flex">
+      <Suspense fallback={<div className="w-64 bg-white border-r shrink-0" />}>
         <StudioSidebar user={user} counts={{ total: authorPosts.length }} />
       </Suspense>
 
-      <main className="flex-1 p-6 sm:p-8 lg:p-10 max-w-6xl overflow-y-auto">
+      <main className="flex-1 h-screen overflow-y-auto p-6 sm:p-8 lg:p-10 max-w-6xl">
         <ArticleEditor
           initialPost={post}
           categories={categories}

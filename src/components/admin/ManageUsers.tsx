@@ -27,6 +27,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createUserSchema, CreateUserFormData } from '@/lib/validations';
 import { getRoleName, isAdminRole } from '@/lib/roles';
+import { ConfirmationModal } from '@/components/common/ConfirmationModal';
 
 const CreateUserForm: React.FC<{
   onSubmit: (data: CreateUserFormData) => Promise<void>;
@@ -168,6 +169,8 @@ export const ManageUsers: React.FC = () => {
   const [isAddingUser, setIsAddingUser] = useState(false);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [userToDelete, setUserToDelete] = useState<any | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const { post, put, del, loading: isMutating } = useApi();
 
@@ -321,20 +324,22 @@ export const ManageUsers: React.FC = () => {
     }
   };
 
-  const handleDeleteUser = async (user: any) => {
-    const userId = user._id || user.id;
-    if (!confirm(`Are you sure you want to delete user "${user.name}" (${user.email})?`)) {
-      return;
-    }
+  const handleConfirmDeleteUser = async () => {
+    if (!userToDelete) return;
+    const userId = userToDelete._id || userToDelete.id;
 
+    setIsDeleting(true);
     try {
       await del(`/api/user/${userId}`);
-      setActionMessage(`User "${user.name}" deleted successfully.`);
+      setActionMessage(`User "${userToDelete.name}" deleted successfully.`);
       setTimeout(() => setActionMessage(null), 3000);
+      setUserToDelete(null);
       refetch();
     } catch (err: any) {
       setActionError(err.response?.data?.message || err.message || 'Failed to delete user');
       setTimeout(() => setActionError(null), 4000);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -685,7 +690,7 @@ export const ManageUsers: React.FC = () => {
                       <td className="py-3.5 px-4 text-right">
                         <button
                           type="button"
-                          onClick={() => handleDeleteUser(u)}
+                          onClick={() => setUserToDelete(u)}
                           disabled={isMutating}
                           className="p-2 rounded-lg text-[#96918B] hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
                           title="Delete User"
@@ -765,6 +770,18 @@ export const ManageUsers: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Confirmation Modal for user deletion */}
+      <ConfirmationModal
+        isOpen={!!userToDelete}
+        title="Delete User Account"
+        message={`Are you sure you want to delete user "${userToDelete?.name}" (${userToDelete?.email})? This action cannot be undone and will permanently remove their profile.`}
+        confirmText="Delete User"
+        variant="danger"
+        isLoading={isDeleting}
+        onConfirm={handleConfirmDeleteUser}
+        onCancel={() => setUserToDelete(null)}
+      />
     </div>
   );
 };

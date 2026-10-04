@@ -19,6 +19,7 @@ import {
   BookOpen,
   X,
 } from 'lucide-react';
+import { ConfirmationModal } from '@/components/common/ConfirmationModal';
 
 interface AdminBlogListProps {
   initialStatus?: string;
@@ -31,6 +32,8 @@ export const AdminBlogList: React.FC<AdminBlogListProps> = ({ initialStatus = 'a
   const isFirstMount = useRef(true);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [blogToDelete, setBlogToDelete] = useState<any | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Hook for CRUD operations
   const { put, del, loading: isMutating } = useApi();
@@ -99,18 +102,22 @@ export const AdminBlogList: React.FC<AdminBlogListProps> = ({ initialStatus = 'a
     }
   };
 
-  const handleDelete = async (blog: any) => {
-    const blogId = blog._id || blog.id;
-    if (!confirm(`Are you sure you want to delete "${blog.title}"?`)) return;
+  const handleConfirmDeleteBlog = async () => {
+    if (!blogToDelete) return;
+    const blogId = blogToDelete._id || blogToDelete.id;
 
+    setIsDeleting(true);
     try {
       await del(`/api/blog/${blogId}`);
       setActionMessage('Blog deleted successfully.');
       setTimeout(() => setActionMessage(null), 3000);
+      setBlogToDelete(null);
       refetch();
     } catch (err: any) {
       setActionError(err.response?.data?.message || err.message || 'Failed to delete blog');
       setTimeout(() => setActionError(null), 4000);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -318,7 +325,7 @@ export const AdminBlogList: React.FC<AdminBlogListProps> = ({ initialStatus = 'a
                         <button
                           type="button"
                           disabled={isMutating}
-                          onClick={() => handleDelete(blog)}
+                          onClick={() => setBlogToDelete(blog)}
                           className="p-1.5 rounded-lg border border-[#EAE6DF] text-rose-600 hover:bg-rose-50 hover:border-rose-200 transition-colors cursor-pointer"
                           title="Delete article"
                         >
@@ -399,6 +406,18 @@ export const AdminBlogList: React.FC<AdminBlogListProps> = ({ initialStatus = 'a
           </button>
         </div>
       </div>
+
+      {/* Confirmation Modal for Admin Blog deletion */}
+      <ConfirmationModal
+        isOpen={!!blogToDelete}
+        title="Delete Article"
+        message={`Are you sure you want to permanently delete "${blogToDelete?.title}"? All associated comments and engagement data will also be deleted.`}
+        confirmText="Delete Article"
+        variant="danger"
+        isLoading={isDeleting}
+        onConfirm={handleConfirmDeleteBlog}
+        onCancel={() => setBlogToDelete(null)}
+      />
     </div>
   );
 };

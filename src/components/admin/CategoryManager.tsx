@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Category } from '@/types';
 import { FolderPlus, Edit2, Trash2, CheckCircle2, AlertCircle, Plus, Folder, Hash } from 'lucide-react';
 import { useApi } from '@/hooks/useApi';
+import { ConfirmationModal } from '@/components/common/ConfirmationModal';
 
 interface TagItem {
   id: string;
@@ -38,6 +39,10 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
   const [isAddingTag, setIsAddingTag] = useState(false);
   const [editingTag, setEditingTag] = useState<TagItem | null>(null);
   const [tagName, setTagName] = useState('');
+
+  // Delete modal state
+  const [itemToDelete, setItemToDelete] = useState<{ id: string; name: string; type: 'category' | 'tag' } | null>(null);
+  const [isDeletingItem, setIsDeletingItem] = useState(false);
 
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -110,16 +115,26 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
     }
   };
 
-  const handleDeleteCategory = async (id: string, name: string) => {
-    if (!confirm(`Are you sure you want to delete category "${name}"?`)) return;
+  const handleConfirmDelete = async () => {
+    if (!itemToDelete) return;
 
+    setIsDeletingItem(true);
     try {
-      await del(`/api/category/${id}`);
-      setStatusMessage('Category removed');
+      if (itemToDelete.type === 'category') {
+        await del(`/api/category/${itemToDelete.id}`);
+        setStatusMessage('Category removed successfully');
+      } else {
+        await del(`/api/tag/${itemToDelete.id}`);
+        setTags(prev => prev.filter(t => (t.id || t._id) !== itemToDelete.id));
+        setStatusMessage('Tag removed successfully');
+      }
+      setItemToDelete(null);
       router.refresh();
       setTimeout(() => setStatusMessage(null), 3000);
     } catch (err: any) {
-      alert(err.response?.data?.message || err.message || 'Error deleting category');
+      setErrorMessage(err.response?.data?.message || err.message || `Error deleting ${itemToDelete.type}`);
+    } finally {
+      setIsDeletingItem(false);
     }
   };
 
@@ -147,20 +162,6 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
       setTimeout(() => setStatusMessage(null), 3000);
     } catch (err: any) {
       setErrorMessage(err.response?.data?.message || err.message || 'Error saving tag');
-    }
-  };
-
-  const handleDeleteTag = async (id: string, name: string) => {
-    if (!confirm(`Are you sure you want to delete tag "${name}"?`)) return;
-
-    try {
-      await del(`/api/tag/${id}`);
-      setTags(prev => prev.filter(t => (t.id || t._id) !== id));
-      setStatusMessage('Tag removed');
-      router.refresh();
-      setTimeout(() => setStatusMessage(null), 3000);
-    } catch (err: any) {
-      alert(err.response?.data?.message || err.message || 'Error deleting tag');
     }
   };
 
@@ -374,7 +375,7 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
 
                         <button
                           type="button"
-                          onClick={() => handleDeleteCategory(cat.id, cat.name)}
+                          onClick={() => setItemToDelete({ id: cat.id, name: cat.name, type: 'category' })}
                           className="p-1.5 rounded-lg border border-[#EAE6DF] text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
                           title="Delete Category"
                         >
@@ -487,7 +488,7 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
 
                             <button
                               type="button"
-                              onClick={() => handleDeleteTag(tagId, tag.name)}
+                              onClick={() => setItemToDelete({ id: tagId, name: tag.name, type: 'tag' })}
                               className="p-1.5 rounded-lg border border-[#EAE6DF] text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
                               title="Delete Tag"
                             >
@@ -504,6 +505,22 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
           </div>
         </>
       )}
+
+      {/* Confirmation Modal for deletion */}
+      <ConfirmationModal
+        isOpen={!!itemToDelete}
+        title={itemToDelete?.type === 'category' ? 'Delete Category' : 'Delete Tag'}
+        message={
+          itemToDelete?.type === 'category'
+            ? `Are you sure you want to delete category "${itemToDelete?.name}"? Stories in this category will become uncategorized.`
+            : `Are you sure you want to delete tag "#${itemToDelete?.name}"? This tag will be removed from all associated stories.`
+        }
+        confirmText="Delete"
+        variant="danger"
+        isLoading={isDeletingItem}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setItemToDelete(null)}
+      />
     </div>
   );
 };
